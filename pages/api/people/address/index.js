@@ -5,16 +5,43 @@ export function handler(req, res) {
 
     switch (method) {
         case "GET":
-            res.status(200).json(todos);
+            return axios({
+                method: 'get',
+                url: 'http://localhost:8080/ps/users/3/address',
+                headers: {
+                    'accept': '*/*',
+                    'charset': 'UTF-8',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin':'*'
+                },
+                mode: 'no-cors',
+            }).then(function (response) {
+                console.log(response);
+                res.status(200).json(response);
+            }).catch(function (error) {
+                console.log(error);
+                res.status(500).json(error);
+            });
             break;
         case "POST":
-            const { todo, completed } = req.body;
-            todos.push({
-                id: todos.length + 1,
-                todo,
-                completed,
+            return axios({
+                method: 'post',
+                url: 'http://localhost:8080/ps/users/3/address',
+                data: req.body,
+                headers: {
+                    'accept': '*/*',
+                    'charset': 'UTF-8',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin':'*'
+                },
+                mode: 'no-cors',
+            }).then(function (response) {
+                console.log(response);
+                res.status(201).json(response);
+            }).catch(function (error) {
+                console.log(error);
+                res.status(500).json(error);
             });
-            res.status(200).json(todos);
             break;
         default:
             res.setHeader("Allow", ["GET", "POST"]);

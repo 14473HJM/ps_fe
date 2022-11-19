@@ -4,10 +4,17 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import AddressForm from "../../../components/people/address";
+import AddressForm from "../../components/people/address";
+import {useSession, getSession } from "next-auth/react";
+import Layout from "../../components/layout/layout";
+import Dashboard from "../dashboard";
+import PeopleForm from "../../components/people/people";
+import ContactForm from "../../components/people/contact";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
+
+    const { data: session, status } = useSession();
 
     return (
         <div
@@ -19,7 +26,7 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                    <React.Fragment>{children}</React.Fragment>
                 </Box>
             )}
         </div>
@@ -56,14 +63,22 @@ export default function BasicTabs() {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                Item One
+                <PeopleForm />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <AddressForm />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                Item Three
+                <ContactForm />
             </TabPanel>
         </Box>
     );
+}
+
+BasicTabs.getLayout = function getLayout(page) {
+    return (
+        <Layout>
+            {page}
+        </Layout>
+    )
 }

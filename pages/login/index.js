@@ -41,7 +41,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getCsrfToken } from "next-auth/react"
 import { signIn } from "next-auth/react"
-import { SimpleCopyright, LogoCard } from "../../components/brand/copyright";
+import { SimpleCopyright, LogoCardBlack } from "../../components/brand/copyright";
 
 const theme = createTheme();
 
@@ -67,7 +67,7 @@ export default function Login({ csrfToken }) {
                         alignItems: 'center',
                     }}
                 >
-                    <LogoCard sx={{ mt: 8, mb: 4 }}/>
+                    <LogoCardBlack sx={{ mt: 8, mb: 4 }} />
                     {/*<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>*/}
                     {/*    <LockOutlinedIcon />*/}
                     {/*</Avatar>*/}
@@ -118,13 +118,13 @@ export default function Login({ csrfToken }) {
                             </Grid>
                             <Grid item>
                                 <Link href="#" variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                    {"Don't have an account? Request it!"}
                                 </Link>
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
-                <SimpleCopyright sx={{ mt: 8, mb: 4 }} />
+                <SimpleCopyright sx={{ mt: 8, mb: 4 }} color="black" />
             </Container>
         </ThemeProvider>
     );

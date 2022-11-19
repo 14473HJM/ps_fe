@@ -47,12 +47,14 @@ const options = {
             if(user) {
                 token.role = user.role;
                 token.userId = user.id;
+                token.access_token = user.access_token;
             }
             return token
         },
         async session({ session, token}) {
             session.user.role = token.role;
             session.user.id = token.userId;
+            session.user.access_token = token.access_token;
             return session
         }
     },

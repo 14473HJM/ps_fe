@@ -1,59 +1,102 @@
-import * as React from 'react';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import Button from "@mui/material/Button";
+import {useSession} from "next-auth/react";
+import * as React from "react";
 import Box from "@mui/material/Box";
-import {useSession, getSession} from "next-auth/react";
-import axios from "axios";
-import { useRouter } from 'next/router'
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
 
 
-export default function AddressForm() {
+export default function AddressInformation(props) {
 
-    const { data: session, status } = useSession();
+    const student = props.student;
+    const setStudent = props.setStudent;
+    const handleNext = props.handleNext;
+    const handleBack = props.handleBack;
+    const [province, setProvince] = React.useState('X');
+    const [formValidation, setFormValidation] = React.useState(false);
 
-
-    const [province, setProvince] = React.useState('');
-
-    const handleChange = (event) => {
+    const handleProvince = (event) => {
         setProvince(event.target.value);
+        student.address.province = province;
+        handleChangeForm();
     };
 
-    const handleSubmit = (event) => {
+    const handleStreet = (event) => {
         event.preventDefault();
-        // console.log(event.target.street.value)
-        // console.log(event.target.streetNumber.value)
-        // console.log(event.target.zipCode.value)
-        // console.log(event.target.detail.value)
-        // console.log(event.target.city.value)
-        // console.log({province})
-        // console.log(event.target.country.value)
-        const address = {
-            street: event.target.street.value,
-            streetNumber: event.target.streetNumber.value,
-            zipCode: event.target.zipCode.value,
-            detail: event.target.detail.value,
-            city: event.target.city.value,
-            province: {province}.province,
-            country: 'AR'
+        if(!event.target.value && !event.target.value.trim().length) {
+            student.address.street = null;
+        } else {
+            student.address.street = event.target.value;
+            setStudent(student);
         }
-        const {user} = session;
-        const {access_token} = user;
-        const {id} = user;
-        const res = postAddress(address, access_token, id);
+        handleChangeForm();
     };
+
+    const handleStreetNumber = (event) => {
+        if(!event.target.value && !event.target.value.trim().length) {
+            student.address.streetNumber = null;
+        } else {
+            student.address.streetNumber = event.target.value;
+            setStudent(student);
+        }
+        handleChangeForm();
+    };
+
+    const handleZipCode = (event) => {
+        if(!event.target.value && !event.target.value.trim().length) {
+            student.address.zipCode = null;
+        } else {
+            student.address.zipCode = event.target.value;
+            setStudent(student);
+        }
+        handleChangeForm();
+    };
+
+    const handleDetail = (event) => {
+        if(!event.target.value && !event.target.value.trim().length) {
+            student.address.detail = null;
+        } else {
+            student.address.detail = event.target.value;
+            setStudent(student);
+        }
+        handleChangeForm();
+    };
+
+    const handleCity = (event) => {
+        if(!event.target.value && !event.target.value.trim().length) {
+            student.address.city = null;
+        } else {
+            student.address.city = event.target.value;
+            setStudent(student);
+        }
+        handleChangeForm();
+    };
+
+    const handleChangeForm = () => {
+        console.log(student)
+        if(student.address.street != null &&
+            student.address.streetNumber != null &&
+            student.address.province &&
+            student.address.city != null &&
+            student.address.zipCode != null &&
+            student.address.detail != null){
+            setFormValidation(true);
+        } else {
+            setFormValidation(false);
+        }
+    }
 
     return (
         <React.Fragment>
             <Box component="form"
-                 onSubmit={handleSubmit}
+                 onSubmit={handleNext}
                  noValidate sx={{ mt: 1 }}
             >
-                <Typography variant="h6" gutterBottom>
-                    Set your personal address
+                <Typography variant="h4" gutterBottom>
+                    Ingresá tu domicilio actual
                 </Typography>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
@@ -65,6 +108,8 @@ export default function AddressForm() {
                             fullWidth
                             autoComplete="street"
                             variant="standard"
+                            defaultValue={student.address.street}
+                            onBlur={handleStreet}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -76,6 +121,8 @@ export default function AddressForm() {
                             fullWidth
                             autoComplete="streetNumber"
                             variant="standard"
+                            defaultValue={student.address.streetNumber}
+                            onBlur={handleStreetNumber}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -87,6 +134,8 @@ export default function AddressForm() {
                             fullWidth
                             autoComplete="zipCode"
                             variant="standard"
+                            defaultValue={student.address.zipCode}
+                            onBlur={handleZipCode}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -97,6 +146,8 @@ export default function AddressForm() {
                             fullWidth
                             autoComplete="detail"
                             variant="standard"
+                            defaultValue={student.address.detail}
+                            onBlur={handleDetail}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -108,6 +159,8 @@ export default function AddressForm() {
                             fullWidth
                             autoComplete="city"
                             variant="standard"
+                            defaultValue={student.address.city}
+                            onBlur={handleCity}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -116,8 +169,9 @@ export default function AddressForm() {
                             id="province-select"
                             value={province}
                             label="Age"
-                            onChange={handleChange}
+                            onChange={handleProvince}
                             fullWidth
+                            onBlur={handleProvince}
                         >
                             <MenuItem value="B">Buenos Aires</MenuItem>
                             <MenuItem value="K">Catamarca</MenuItem>
@@ -158,48 +212,20 @@ export default function AddressForm() {
                             defaultValue="Argentina"
                         />
                     </Grid>
-                    <Grid item xs={12}
-                          container
-                          direction="row"
-                          justifyContent="flex-end"
-                          alignItems="center">
-                        <Button variant="contained" type="submit" >Save</Button>
-                    </Grid>
                 </Grid>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} >
+                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                        Back
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        sx={{ mt: 3, ml: 1 }}
+                        disabled={!formValidation}
+                        type={"submit"}
+                    >Next</Button>
+                </Box>
             </Box>
         </React.Fragment>
     );
-}
-
-async function postAddress(address, access_token, user_id) {
-    // const res = await fetch('http://localhost:8080/ps/users/'.concat(3,'/address'), {
-    //     mode: 'no-cors',
-    //     method: 'POST',
-    //     body: JSON.stringify(address),
-    //     headers: { accept: '*/*',
-    //         'Content-Type': 'application/json',
-    //         'Access-Control-Allow-Origin':'*',}
-    // });
-    // const data = await res.json();
-    // return data;
-
-    return axios({
-            method: 'post',
-            url: 'http://localhost:8080/ps/users/' + user_id + '/address',
-            data: address,
-            headers: {
-                'accept': '*/*',
-                'charset': 'UTF-8',
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':'*',
-                'Authorization': 'Bearer ' + access_token,
-            },
-            mode: 'no-cors',
-        })
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
 }
