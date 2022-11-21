@@ -14,8 +14,8 @@ export default function Dashboard({users}) {
     if (status === "unauthenticated") {
         return <p>Access Denied</p>
     }
-
-    if (session && session.user.role === "ADMIN") {
+    console.log(session);
+    if (session && session.user.roles.includes("ADMIN")) {
 
 
     return (
@@ -49,6 +49,7 @@ export default function Dashboard({users}) {
         </>
     )
     }else {
+        console.log(session);
         return (
             <div>
                 <h1>You are not authorized to view this page!</h1>

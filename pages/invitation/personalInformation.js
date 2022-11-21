@@ -8,7 +8,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 
-
 export default function PersonlInformation(props) {
 
     const student = props.student;
@@ -72,9 +71,14 @@ export default function PersonlInformation(props) {
             student.lastName != null &&
             student.personIdentification &&
             student.personIdentification.identificationType != null &&
-            student.personIdentification.identification != null) {
+            student.personIdentification.identification != null &&
+            student.universityIdentification.identificationType != null &&
+            student.universityIdentification.identification != null) {
             setFormValidation(true);
         } else {
+            if(student.universityIdentification.identification == null && props.legajo != null) {
+                student.universityIdentification.identification = props.legajo;
+            }
             setFormValidation(false);
         }
     }

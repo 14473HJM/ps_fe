@@ -19,6 +19,7 @@ export default function AddressInformation(props) {
     const [formValidation, setFormValidation] = React.useState(false);
 
     const handleProvince = (event) => {
+        console.log(event.target)
         setProvince(event.target.value);
         student.address.province = province;
         handleChangeForm();
@@ -173,30 +174,30 @@ export default function AddressInformation(props) {
                             fullWidth
                             onBlur={handleProvince}
                         >
-                            <MenuItem value="B">Buenos Aires</MenuItem>
-                            <MenuItem value="K">Catamarca</MenuItem>
-                            <MenuItem value="H">Chaco</MenuItem>
-                            <MenuItem value="U">Chubut</MenuItem>
-                            <MenuItem value="C">Ciudad Autónoma de Buenos Aires</MenuItem>
-                            <MenuItem value="W">Corrientes</MenuItem>
-                            <MenuItem value="X">Córdoba</MenuItem>
-                            <MenuItem value="E">Entre Ríos</MenuItem>
-                            <MenuItem value="P">Formosa</MenuItem>
-                            <MenuItem value="Y">Jujuy</MenuItem>
-                            <MenuItem value="L">La Pampa</MenuItem>
-                            <MenuItem value="F">La Rioja</MenuItem>
-                            <MenuItem value="M">Mendoza</MenuItem>
-                            <MenuItem value="N">Misiones</MenuItem>
-                            <MenuItem value="Q">Neuquén</MenuItem>
-                            <MenuItem value="R">Río Negro</MenuItem>
-                            <MenuItem value="A">Salta</MenuItem>
-                            <MenuItem value="J">San Juan</MenuItem>
-                            <MenuItem value="D">San Luis</MenuItem>
-                            <MenuItem value="Z">Santa Cruz</MenuItem>
-                            <MenuItem value="S">Santa Fe</MenuItem>
-                            <MenuItem value="G">Santiago del Estero</MenuItem>
-                            <MenuItem value="V">Tierra del Fuego</MenuItem>
-                            <MenuItem value="T">Tucumán</MenuItem>
+                            <MenuItem value="Buenos Aires">Buenos Aires</MenuItem>
+                            <MenuItem value="Catamarca">Catamarca</MenuItem>
+                            <MenuItem value="Chaco">Chaco</MenuItem>
+                            <MenuItem value="Chubut">Chubut</MenuItem>
+                            <MenuItem value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</MenuItem>
+                            <MenuItem value="Corrientes">Corrientes</MenuItem>
+                            <MenuItem value="Córdoba">Córdoba</MenuItem>
+                            <MenuItem value="Entre Ríos">Entre Ríos</MenuItem>
+                            <MenuItem value="Formosa">Formosa</MenuItem>
+                            <MenuItem value="Jujuy">Jujuy</MenuItem>
+                            <MenuItem value="La Pampa">La Pampa</MenuItem>
+                            <MenuItem value="La Rioja">La Rioja</MenuItem>
+                            <MenuItem value="Mendoza">Mendoza</MenuItem>
+                            <MenuItem value="Misiones">Misiones</MenuItem>
+                            <MenuItem value="Neuquén">Neuquén</MenuItem>
+                            <MenuItem value="Río Negro">Río Negro</MenuItem>
+                            <MenuItem value="Salta">Salta</MenuItem>
+                            <MenuItem value="San Juan">San Juan</MenuItem>
+                            <MenuItem value="San Luis">San Luis</MenuItem>
+                            <MenuItem value="Santa Cruz">Santa Cruz</MenuItem>
+                            <MenuItem value="Santa Fe">Santa Fe</MenuItem>
+                            <MenuItem value="Santiago del Estero">Santiago del Estero</MenuItem>
+                            <MenuItem value="Tierra del Fuego">Tierra del Fuego</MenuItem>
+                            <MenuItem value="Tucumán">Tucumán</MenuItem>
                         </Select>
                     </Grid>
                     <Grid item xs={12} sm={4}>

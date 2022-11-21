@@ -19,7 +19,7 @@ export const mainListItems = (
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton  href='/project'>
+        <ListItemButton  href='/projects/{id}'>
             <ListItemIcon>
                     <WorkIcon />
             </ListItemIcon>

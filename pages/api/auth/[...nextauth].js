@@ -22,7 +22,7 @@ const options = {
                 const user = {
                     name: beUser.user?.userName,
                     access_token : beUser.token,
-                    role: beUser.user?.roles[0]?.name,
+                    roles: beUser.user?.roles,
                     id: beUser.user.id,
                 };
                 // If no error and we have user data, return it
@@ -45,14 +45,14 @@ const options = {
                 };
             }
             if(user) {
-                token.role = user.role;
+                token.roles = user.roles;
                 token.userId = user.id;
                 token.access_token = user.access_token;
             }
             return token
         },
         async session({ session, token}) {
-            session.user.role = token.role;
+            session.user.roles = token.roles;
             session.user.id = token.userId;
             session.user.access_token = token.access_token;
             return session
