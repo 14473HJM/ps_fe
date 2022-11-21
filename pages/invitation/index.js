@@ -11,7 +11,7 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {StickyFooterWhite} from "../../components/brand/stickyFooter";
+import { StickyFooter } from "../../components/brand/stickyFooter";
 import {useRouter} from "next/router";
 import axios from "axios";
 import PersonalInformation from "./personalInformation";
@@ -133,7 +133,7 @@ export default function CreateAccount() {
                         </React.Fragment>
                     )}
                 </Paper>
-                <StickyFooterWhite />
+                <StickyFooter color="white" />
             </Container>
         </ThemeProvider>
     );

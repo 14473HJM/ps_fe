@@ -15,9 +15,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
 import {AppBar} from './appbar'
 import {Sidebar} from "./sidebar";
-import {CopyrightBlack, CopyrightWhite} from "../brand/copyright";
-import StickyFooter from "../brand/stickyFooter";
-import {StickyFooterBlack, StickyFooterWhite} from "../brand/stickyFooter";
+import { StickyFooter } from "../brand/stickyFooter";
 import CardMedia from "@mui/material/CardMedia";
 
 const mdTheme = createTheme();
@@ -107,7 +105,7 @@ export default function Layout({ children }) {
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4, pt:10 }}>
                         {children}
-                        <StickyFooterBlack />
+                        <StickyFooter color="black" />
                     </Container>
                 </Box>
             </Box>
