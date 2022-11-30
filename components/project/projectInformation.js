@@ -11,7 +11,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 
 export default function ProjectInformation(props) {
 
-    const[project, setProject]  = React.useState({});
+    const [project, setProject]  = React.useState(props.project);
+    console.log(props);
 
     return(
         <React.Fragment>
@@ -32,7 +33,7 @@ export default function ProjectInformation(props) {
                             errorTarget="under"
                             id="name"
                             name="name"
-                            label="Nombre"
+                            //label="Nombre"
                             fullWidth
                             autoComplete="name"
                             //variant="standard"
@@ -49,13 +50,53 @@ export default function ProjectInformation(props) {
                             required
                             id="description"
                             name="description"
-                            label="Descripción"
+                            //label="Descripción"
                             fullWidth
                             autoComplete="description"
                             multiline
+                            rows={2}
+                            //variant="standard"
+                            defaultValue={project.description}
+                            //onBlur={handleName}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <Typography variant="h6" gutterBottom>
+                            Objetivo del Sistema de Información
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <TextField
+                            required
+                            id="objective"
+                            name="objective"
+                            //label="Objetivo"
+                            fullWidth
+                            autoComplete="objective"
+                            multiline
                             rows={4}
                             //variant="standard"
-                            defaultValue={project.name}
+                            defaultValue={project.objective}
+                            //onBlur={handleName}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <Typography variant="h6" gutterBottom>
+                            Limite del Sistema de Información
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <TextField
+                            required
+                            id="projectLimit"
+                            name="projectLimit"
+                            //label="Limite"
+                            fullWidth
+                            autoComplete="projectLimit"
+                            multiline
+                            rows={3}
+                            //variant="standard"
+                            defaultValue={project.projectLimit}
                             //onBlur={handleName}
                         />
                     </Grid>
@@ -101,7 +142,7 @@ export default function ProjectInformation(props) {
                             fullWidth
                             autoComplete="imageLink"
                             //variant="standard"
-                            defaultValue={project.name}
+                            defaultValue={project.imageLink}
                         />
                     </Grid>
                 </Grid>

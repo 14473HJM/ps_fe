@@ -15,38 +15,38 @@ import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import {useEffect} from "react";
 import Divider from "@mui/material/Divider";
+import {useSession} from "next-auth/react";
+import axios from "axios";
 
 export default function ProjectConversation(props) {
 
-    const[project, setProject]  = React.useState({});
-    const[comments, setComments]  = React.useState({});
+    console.log(props);
+    const[ conversation, setConversation ]  = React.useState(props.project.conversation);
 
-    const userMock = {
-        person: {
-            id: 123456,
-            name: "Hernán Jesús",
-            lastName: "Morais",
-            imageProfile: "https://media-exp1.licdn.com/dms/image/C4E03AQGBhPy4NCQd3g/profile-displayphoto-shrink_800_800/0/1567771904876?e=1674691200&v=beta&t=eLC1SM3Q5BcHUvsKnNloZXH2lLLdeDkDpuLhxvqFYXo",
-        }
-    }
+    const project = props.project;
+
+    const { data: session, status } = useSession()
+
+    const user = session.user;
+
+    console.log(user);
 
     const handleSendMessage = (event) => {
         const conversationDom = React.createElement(document.getElementById("conversation"));
         event.preventDefault();
         const comment = {
-            commentator: userMock.person,
+            commentator: user.person,
             comment: event.target.message.value,
-            createdDate: new Date().toLocaleString(),
+            createdDate: new Date(),
         };
-        if(project.conversation == null) {
-            project.conversation = {comments: []};
+        const _comment = postCommentProject(comment, project, user.access_token)
+        if(_comment) {
+            conversation.comments.push(_comment)
+            setConversation(conversation);
+            event.target.message.value = null;
+            console.log(conversation);
         }
-        project.conversation.comments.push(comment)
-        setProject(project);
-        event.target.message.value = null;
-        console.log(project);
         document.getElementById("conversation")
-
     };
 
     return(
@@ -77,8 +77,8 @@ export default function ProjectConversation(props) {
                 </Grid>
                 <Paper style={{ padding: "40px 20px", marginTop:20}} elevation={3} id="conversation">
                     {
-                        (project.conversation != null && project.conversation.comments.length > 0) ?
-                            (project.conversation.comments.map(
+                        (conversation != null && conversation.comments.length > 0) ?
+                            (conversation.comments.map(
                                 (comment) => getCommentCard( comment)
                             )) :
                             (<></>)
@@ -113,4 +113,26 @@ export function getCommentCard(comment) {
         <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
         </React.Fragment>
     );
+}
+
+async function postCommentProject(comment, project, access_token) {
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(comment),
+            headers: {
+                'accept': '*/*',
+                'charset': 'UTF-8',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access_token,
+            }
+        };
+        const res = await fetch('http://localhost:8080/ps/projects/' + project.id + "/conversation/comments", options);
+        console.log(res);
+        if(res.ok) {
+            const _comment = await res.json();
+            console.log(_comment);
+            return _comment;
+        } else {
+            return null;
+        }
 }

@@ -19,11 +19,11 @@ export const mainListItems = (
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton  href='/projects/{id}'>
+        <ListItemButton  href='/projects'>
             <ListItemIcon>
                     <WorkIcon />
             </ListItemIcon>
-            <ListItemText primary="Project" />
+            <ListItemText primary="Projects" />
         </ListItemButton>
         <ListItemButton  href='/profile'>
             <ListItemIcon>

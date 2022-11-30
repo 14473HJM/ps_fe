@@ -12,6 +12,7 @@ import ProjectAttachments from "../../components/project/projectAttachments";
 import ProjectConversation from "../../components/project/projectConversation";
 import ProjectPresentation from "../../components/project/projectPresentation";
 import ProjectValuation from "../../components/project/projectValuation";
+import {getToken} from "next-auth/jwt";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -48,9 +49,9 @@ function a11yProps(index) {
     };
 }
 
-export default function BasicTabs() {
+export default function BasicTabs(props) {
     const [value, setValue] = React.useState(0);
-    
+    const [project, setProject] = React.useState(props._project);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -68,22 +69,22 @@ export default function BasicTabs() {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <ProjectInformation />
+                <ProjectInformation project={project} setProject={setProject} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <ProjectMonitoring />
+                <ProjectMonitoring project={project} setProject={setProject} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <ProjectConversation />
+                <ProjectConversation project={project} setProject={setProject} />
             </TabPanel>
             <TabPanel value={value} index={3}>
-                <ProjectAttachments />
+                <ProjectAttachments project={project} setProject={setProject} />
             </TabPanel>
             <TabPanel value={value} index={4}>
-                <ProjectPresentation />
+                <ProjectPresentation project={project} setProject={setProject} />
             </TabPanel>
             <TabPanel value={value} index={5}>
-                <ProjectValuation />
+                <ProjectValuation project={project} setProject={setProject} />
             </TabPanel>
         </Box>
     );
@@ -95,4 +96,32 @@ BasicTabs.getLayout = function getLayout(page) {
             {page}
         </Layout>
     )
+}
+
+export async function getServerSideProps(context) {
+
+    const { req } = context;
+    const { params } = context;
+    console.log(context);
+    const token = await getToken({ req })
+    if(token != null) {
+        const {access_token} = token
+
+        const options = {
+            headers: {
+                'accept': '*/*',
+                'charset': 'UTF-8',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access_token,
+            }
+        };
+
+        // Fetch data from external API
+        const res = await fetch(`http://localhost:8080/ps/projects/${params.id}`, options)
+        const _project = await res.json()
+        // Pass data to the page via props
+        return {props: {_project}}
+    } else {
+        return {props: {}};
+    }
 }
