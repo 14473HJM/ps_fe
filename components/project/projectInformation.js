@@ -12,6 +12,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 export default function ProjectInformation(props) {
 
     const [project, setProject]  = React.useState(props.project);
+    const isDisabled = props.isDisabled;
     console.log(props);
 
     return(
@@ -19,6 +20,7 @@ export default function ProjectInformation(props) {
             <Box component="form"
                  noValidate sx={{ mt: 1 }}
                  alignItems="center"
+                 disabled={isDisabled}
             >
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={12}>
@@ -37,7 +39,8 @@ export default function ProjectInformation(props) {
                             fullWidth
                             autoComplete="name"
                             //variant="standard"
-                            defaultValue={project.name}
+                            defaultValue={project.name ? project.name : null}
+                            disabled={isDisabled}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
@@ -56,8 +59,9 @@ export default function ProjectInformation(props) {
                             multiline
                             rows={2}
                             //variant="standard"
-                            defaultValue={project.description}
+                            defaultValue={project.description ? project.description : null}
                             //onBlur={handleName}
+                            disabled={isDisabled}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
@@ -76,8 +80,9 @@ export default function ProjectInformation(props) {
                             multiline
                             rows={4}
                             //variant="standard"
-                            defaultValue={project.objective}
+                            defaultValue={project.objective ? project.objective : null}
                             //onBlur={handleName}
+                            disabled={isDisabled}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
@@ -96,8 +101,9 @@ export default function ProjectInformation(props) {
                             multiline
                             rows={3}
                             //variant="standard"
-                            defaultValue={project.projectLimit}
+                            defaultValue={project.projectLimit ? project.projectLimit : null}
                             //onBlur={handleName}
+                            disabled={isDisabled}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
@@ -112,8 +118,9 @@ export default function ProjectInformation(props) {
                             //label="projectType"
                             fullWidth
                             required
-                            defaultValue={project.projectType}
+                            defaultValue={project.projectType ? project.projectType : null}
                             //onBlur={handleIdType}
+                            disabled={isDisabled}
                         >
                             <MenuItem value="WEB">Web</MenuItem>
                             <MenuItem value="MOBILE">Mobile</MenuItem>
@@ -121,7 +128,9 @@ export default function ProjectInformation(props) {
                         </Select>
                     </Grid>
                     <Grid item xs={12} sm={4} ml={8}>
-                        <FormControlLabel control={<Checkbox />} label="Es un proyecto real" />
+                        <FormControlLabel control={
+                            <Checkbox disabled={isDisabled} checked={project.isRealProject ? project.isRealProject : false}/>
+                        } label="Es un proyecto real" />
                     </Grid>
                     <Grid item xs={12} sm={4} ml={8}>
 
@@ -142,7 +151,8 @@ export default function ProjectInformation(props) {
                             fullWidth
                             autoComplete="imageLink"
                             //variant="standard"
-                            defaultValue={project.imageLink}
+                            defaultValue={project.imageLink ? project.imageLink : null}
+                            disabled={isDisabled}
                         />
                     </Grid>
                 </Grid>
@@ -150,8 +160,8 @@ export default function ProjectInformation(props) {
                     <Button
                         variant="contained"
                         sx={{ mt: 3, ml: 1 }}
-                        //disabled={!formValidation}
                         type={"submit"}
+                        disabled={isDisabled}
                     >Enviar</Button>
                 </Box>
             </Box>
