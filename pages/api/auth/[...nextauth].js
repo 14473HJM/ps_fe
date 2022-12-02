@@ -24,6 +24,7 @@ const options = {
                     access_token : beUser.token,
                     roles: beUser.user?.roles,
                     id: beUser.user.id,
+                    person: beUser.user.person,
                 };
                 // If no error and we have user data, return it
                 if (user) {
@@ -48,6 +49,7 @@ const options = {
                 token.roles = user.roles;
                 token.userId = user.id;
                 token.access_token = user.access_token;
+                token.person = user.person;
             }
             return token
         },
@@ -55,6 +57,7 @@ const options = {
             session.user.roles = token.roles;
             session.user.id = token.userId;
             session.user.access_token = token.access_token;
+            session.user.person = token.person;
             return session
         }
     },
