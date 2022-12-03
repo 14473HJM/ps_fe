@@ -12,12 +12,13 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {mainAdminListItems, mainProfessorListItems, mainStudentListItems, secondaryListItems} from './listItems';
 import {AppBar} from './appbar'
 import {Sidebar} from "./sidebar";
 import { StickyFooter } from "../brand/stickyFooter";
 import CardMedia from "@mui/material/CardMedia";
-import {useSession} from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 const mdTheme = createTheme();
 
@@ -69,6 +70,9 @@ export default function Layout({ children }) {
                         <Badge badgeContent={4} color="secondary">
                             <NotificationsIcon />
                         </Badge>
+                    </IconButton>
+                        <IconButton color="inherit" onClick={signOut}>
+                        <LogoutIcon />
                     </IconButton>
                 </Toolbar>
             </AppBar>

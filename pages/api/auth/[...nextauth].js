@@ -61,9 +61,10 @@ const options = {
             return session
         }
     },
-    // pages: {
-    //     signIn: '/login',
-    // }
+    pages: {
+        signIn: '/login',
+        signOut: '/login',
+    }
 }
 
 export default (req, res) => NextAuth(req, res, options)
