@@ -7,17 +7,6 @@ import Layout from "../../components/layout/layout";
 export default function Dashboard({users}) {
     const { data: session, status } = useSession()
 
-    if (status === "loading") {
-        return <p>Loading...</p>
-    }
-
-    if (status === "unauthenticated") {
-        return <p>Access Denied</p>
-    }
-    console.log(session);
-    if (session && session.user.roles.includes("ADMIN")) {
-
-
     return (
         <>
             <div>
@@ -48,24 +37,10 @@ export default function Dashboard({users}) {
             </ul>
         </>
     )
-    }else {
-        console.log(session);
-        return (
-            <div>
-                <h1>You are not authorized to view this page!</h1>
-            </div>
-        )
-    }
 
 }
 
-Dashboard.getLayout = function getLayout(page) {
-    return (
-        <Layout>
-            {page}
-        </Layout>
-    )
-}
+Dashboard.auth = true;
 
 export async function getServerSideProps(context) {
 

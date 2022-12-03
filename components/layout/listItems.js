@@ -10,8 +10,13 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import WorkIcon from '@mui/icons-material/Work';
+import LocalActivityIcon from '@mui/icons-material/LocalActivity';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import SettingsIcon from '@mui/icons-material/Settings';
 
-export const mainListItems = (
+
+
+export const mainProfessorListItems = (
     <React.Fragment>
         <ListItemButton href='/dashboard'>
             <ListItemIcon>
@@ -21,21 +26,103 @@ export const mainListItems = (
         </ListItemButton>
         <ListItemButton  href='/projects'>
             <ListItemIcon>
-                    <WorkIcon />
+                <WorkIcon />
             </ListItemIcon>
-            <ListItemText primary="Projects" />
+            <ListItemText primary="Proyectos" />
+        </ListItemButton>
+        <ListItemButton  href='/invitations'>
+            <ListItemIcon>
+                <LocalActivityIcon />
+            </ListItemIcon>
+            <ListItemText primary="Invitaciones" />
         </ListItemButton>
         <ListItemButton  href='/profile'>
             <ListItemIcon>
                 <BadgeIcon />
             </ListItemIcon>
-            <ListItemText primary="Profile" />
+            <ListItemText primary="Mi Perfil" />
         </ListItemButton>
         <ListItemButton href='/help'>
             <ListItemIcon>
                 <SupportAgentIcon />
             </ListItemIcon>
-            <ListItemText primary="Help" />
+            <ListItemText primary="Ayuda" />
+        </ListItemButton>
+    </React.Fragment>
+);
+
+export const mainAdminListItems = (
+    <React.Fragment>
+        <ListItemButton href='/dashboard'>
+            <ListItemIcon>
+                <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+        </ListItemButton>
+        <ListItemButton  href='/projects'>
+            <ListItemIcon>
+                <WorkIcon />
+            </ListItemIcon>
+            <ListItemText primary="Proyectos" />
+        </ListItemButton>
+        <ListItemButton  href='/invitations'>
+            <ListItemIcon>
+                <LocalActivityIcon />
+            </ListItemIcon>
+            <ListItemText primary="Invitaciones" />
+        </ListItemButton>
+        <ListItemButton  href='/users'>
+            <ListItemIcon>
+                <PeopleAltIcon />
+            </ListItemIcon>
+            <ListItemText primary="Usuarios" />
+        </ListItemButton>
+        <ListItemButton  href='/configurations'>
+            <ListItemIcon>
+                <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Configuración" />
+        </ListItemButton>
+        <ListItemButton  href='/profile'>
+            <ListItemIcon>
+                <BadgeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Mi Perfil" />
+        </ListItemButton>
+        <ListItemButton href='/help'>
+            <ListItemIcon>
+                <SupportAgentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Ayuda" />
+        </ListItemButton>
+    </React.Fragment>
+);
+
+export const mainStudentListItems = (
+    <React.Fragment>
+        <ListItemButton href='/dashboard'>
+            <ListItemIcon>
+                <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+        </ListItemButton>
+        <ListItemButton  href='/projects'>
+            <ListItemIcon>
+                <WorkIcon />
+            </ListItemIcon>
+            <ListItemText primary="Proyectos" />
+        </ListItemButton>
+        <ListItemButton  href='/profile'>
+            <ListItemIcon>
+                <BadgeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Mi Perfil" />
+        </ListItemButton>
+        <ListItemButton href='/help'>
+            <ListItemIcon>
+                <SupportAgentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Ayuda" />
         </ListItemButton>
     </React.Fragment>
 );
@@ -43,7 +130,7 @@ export const mainListItems = (
 export const secondaryListItems = (
     <React.Fragment>
         <ListSubheader component="div" inset>
-            Saved reports
+            Reportes
         </ListSubheader>
         <ListItemButton>
             <ListItemIcon>

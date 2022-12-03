@@ -263,13 +263,7 @@ export default function BasicTabs(props) {
     );
 }
 
-BasicTabs.getLayout = function getLayout(page) {
-    return (
-        <Layout>
-            {page}
-        </Layout>
-    )
-}
+BasicTabs.auth = true;
 
 export async function getServerSideProps(context) {
 

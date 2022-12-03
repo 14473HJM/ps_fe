@@ -12,16 +12,19 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
+import {mainAdminListItems, mainProfessorListItems, mainStudentListItems, secondaryListItems} from './listItems';
 import {AppBar} from './appbar'
 import {Sidebar} from "./sidebar";
 import { StickyFooter } from "../brand/stickyFooter";
 import CardMedia from "@mui/material/CardMedia";
+import {useSession} from "next-auth/react";
 
 const mdTheme = createTheme();
 
 export default function Layout({ children }) {
     const [open, setOpen] = React.useState(true);
+    const { data: session } = useSession()
+
     const toggleDrawer = () => {
         setOpen(!open);
     };
@@ -85,7 +88,8 @@ export default function Layout({ children }) {
                 </Toolbar>
                 <Divider sx={{pt:4}}/>
                 <List component="nav">
-                    {mainListItems}
+                    {(session && session.user.roles.includes("ADMIN")) ? mainAdminListItems :
+                        (session && session.user.roles.includes("PROFESSOR")) ? mainProfessorListItems : mainStudentListItems}
                     <Divider sx={{ my: 1 }} />
                     {secondaryListItems}
                 </List>

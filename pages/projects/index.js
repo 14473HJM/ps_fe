@@ -1,15 +1,11 @@
 import * as React from 'react';
-import Layout from "../../components/layout/layout";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import {getToken} from "next-auth/jwt";
-import Link from "next/link";
 import ListItemButton from "@mui/material/ListItemButton";
 
 export default function Projects({projects}) {
@@ -36,13 +32,7 @@ export default function Projects({projects}) {
 
 }
 
-Projects.getLayout = function getLayout(page) {
-    return (
-        <Layout>
-            {page}
-        </Layout>
-    )
-}
+Projects.auth = true;
 
 export async function getServerSideProps(context) {
 

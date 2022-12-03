@@ -75,10 +75,4 @@ export default function BasicTabs() {
     );
 }
 
-BasicTabs.getLayout = function getLayout(page) {
-    return (
-        <Layout>
-            {page}
-        </Layout>
-    )
-}
+BasicTabs.auth = true;

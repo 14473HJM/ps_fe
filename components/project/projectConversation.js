@@ -31,18 +31,24 @@ export default function ProjectConversation(props) {
 
     console.log(user);
 
-    const handleSendMessage = (event) => {
-        const conversationDom = React.createElement(document.getElementById("conversation"));
+    const handleSendMessage = async (event) => {
         event.preventDefault();
         const comment = {
             commentator: user.person,
             comment: event.target.message.value,
             createdDate: new Date(),
         };
-        const _comment = postCommentProject(comment, project, user.access_token)
+        const _comment = await postCommentProject(comment, project, user.access_token)
         if(_comment) {
-            conversation.comments.push(_comment)
-            setConversation(conversation);
+            const comments = project.conversation.comments;
+            comments.push(_comment)
+            setConversation({
+                ...conversation,
+                comments,
+            });
+
+            // conversation.comments.push(_comment)
+            // setConversation(conversation);
             event.target.message.value = null;
             console.log(conversation);
         }
