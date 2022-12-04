@@ -77,7 +77,7 @@ export const mainAdminListItems = (
             </ListItemIcon>
             <ListItemText primary="Usuarios" />
         </ListItemButton>
-        <ListItemButton  href='/configurations'>
+        <ListItemButton  href='/admin/config'>
             <ListItemIcon>
                 <SettingsIcon />
             </ListItemIcon>

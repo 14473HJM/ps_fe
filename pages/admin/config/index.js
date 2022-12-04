@@ -8,20 +8,12 @@ import TableBody from "@mui/material/TableBody";
 import Link from "@mui/material/Link";
 import * as React from "react";
 import {Title1} from './../../../components/common/title';
+import Invitations from "../../invitations";
 
 export default function Config({rows}) {
-    const { data: session, status } = useSession()
+    const { data: session } = useSession()
 
-    if (status === "loading") {
-        return <p>Loading...</p>
-    }
-
-
-    if (status === "unauthenticated") {
-        return <p>Access Denied</p>
-    }
-
-    if (session && session.user.role === "ADMIN") {
+    if (session && session.user.roles.includes("ADMIN")) {
         return (
             <div>
                 <CodeFrameworksTable codeFrameworks={rows} />
@@ -37,6 +29,8 @@ export default function Config({rows}) {
     }
 
 }
+
+Config.auth = true;
 
 export async function getServerSideProps() {
 
