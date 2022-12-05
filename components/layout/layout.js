@@ -66,7 +66,7 @@ export default function Layout({ children }) {
                             alt="Tecnicatura Universitaria en Programacion"
                         />
                     </Typography>
-                    <IconButton color="inherit">
+                    <IconButton color="inherit" sx={{mr: 3}}>
                         <Badge badgeContent={4} color="secondary">
                             <NotificationsIcon />
                         </Badge>
