@@ -5,6 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import WorkIcon from '@mui/icons-material/Work';
+import AddIcon from '@mui/icons-material/Add';
 import {getToken} from "next-auth/jwt";
 import ListItemButton from "@mui/material/ListItemButton";
 
@@ -12,8 +13,8 @@ export default function Projects({projects}) {
 
     return (
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            {projects.map((project) =>
-                <ListItem>
+            {projects.length > 0 ? projects.map((project) =>
+                <ListItem key={project.name}>
                     <ListItemButton component="a" href={"/projects/" + project.id}>
                     <ListItemAvatar>
                         {project.imageLink ?
@@ -26,7 +27,14 @@ export default function Projects({projects}) {
                     <ListItemText primary={"Proyecto del tipo " + project.projectType} secondary={"Descripción: " + project.description} />
                     </ListItemButton>
                 </ListItem>
-            )}
+            ) :
+                <ListItem>
+                    <ListItemButton component="a" href="/projects/new">
+                        <Avatar><AddIcon /></Avatar>
+                        <ListItemText primary="Crear proyecto" />
+                    </ListItemButton>
+                </ListItem>
+            }
         </List>
     );
 

@@ -18,6 +18,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
+import LoadingButton from '@mui/lab/LoadingButton';
 import {getCodeFrameworks, put} from "../../components/config/code-frameworks";
 import {getToken} from "next-auth/jwt";
 import CheckIcon from '@mui/icons-material/Check';
@@ -26,14 +27,18 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import SendIcon from '@mui/icons-material/Send';
 import Divider from "@mui/material/Divider";
-
+import TextField from '@mui/material/TextField';
+import usePost from '../../hooks/usePost';
 
 export default function Invitations(props) {
     const [rowEditable, setRowEditable] = React.useState(0);
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [openInvitationDialog, setOpenInvitationDialog] = React.useState(false);
     const { data: session, status } = useSession();
     const [invitations, SetInvitations] = React.useState(props.invitations);
+    const [invitationData, setInvitationData] = React.useState(null);
+    const { data, error, loading } = usePost('/api/invitation', invitationData);
 
     const handleEdit = (event, id) => {
         event.preventDefault();
@@ -52,7 +57,7 @@ export default function Invitations(props) {
 
     const handleSave = async (event, id, codeFramework) => {
         event.preventDefault();
-        console.log(codeFramework);
+        // console.log(codeFramework);
         setRowEditable(0);
         refreshContent();
     }
@@ -64,6 +69,37 @@ export default function Invitations(props) {
             return false;
         }
     }
+
+    const handleOpenInvitationDialog = () => {
+        setOpenInvitationDialog(true);
+    };
+
+    const handleCloseInvitationDialog = () => {
+        setOpenInvitationDialog(false);
+    };
+
+    const handleSendInvitation = (e) => {
+        e.preventDefault();
+        const {
+            legajo: { value: legajo },
+            email: { value: email },
+        } = e.target;
+        setInvitationData({
+            legajo,
+            email,
+        });
+    }
+
+    React.useEffect(() => {
+        setInvitationData(null);
+        setOpenInvitationDialog(false);
+        if (data) {
+            SetInvitations([
+                ...invitations,
+                data,
+            ])
+        }
+    }, [data, error]);
 
     const handleClickOpenDialog = () => {
         setOpenDialog(true);
@@ -81,7 +117,7 @@ export default function Invitations(props) {
     }
 
     const handleIcons = (status) => {
-        console.log(status);
+        // console.log(status);
         if(status === 'ACTIVE') {
             return (<Fab color="success" variant="extended" size="small" aria-label="add">
                     <CheckIcon sx={{ mr: 1 }} />{status}
@@ -110,7 +146,7 @@ export default function Invitations(props) {
                     Invitaciones
                 </Typography>
                 <Fab color="success" aria-label="add" size="medium" sx={{mt: 0,}}
-                     onClick={() => {}}>
+                        onClick={handleOpenInvitationDialog}>
                     <AddIcon />
                 </Fab>
             </Box>
@@ -183,6 +219,45 @@ export default function Invitations(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Dialog open={openInvitationDialog} onClose={handleCloseInvitationDialog}>
+                <DialogTitle>Enviar invitación</DialogTitle>
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSendInvitation}
+               >
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="legajo"
+                        label="Legajo"
+                        name="legajo"
+                        type="legajo"
+                        fullWidth
+                        variant="standard"
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="email"
+                        label="Dirección de email"
+                        name="email"
+                        type="email"
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseInvitationDialog}>Cancelar</Button>
+                    <LoadingButton loading={loading} type="submit">Enviar</LoadingButton>
+                </DialogActions>
+                </Box> 
+            </Dialog>
         </React.Fragment>
     );
 }
@@ -192,7 +267,7 @@ Invitations.auth = true;
 export async function getServerSideProps(context) {
 
     const { req } = context;
-    console.log(context);
+    // console.log(context);
     const token = await getToken({ req })
     if(token != null) {
         const {access_token} = token
@@ -206,10 +281,10 @@ export async function getServerSideProps(context) {
         };
         // Fetch data from external API
         const res = await fetch('http://localhost:8080/ps/invitations', options);
-        console.log(res);
+        // console.log(res);
         const invitations = await res.json();
         // Pass data to the page via props
-        console.log(invitations);
+        // console.log(invitations);
         return {props: {invitations}}
     } else {
         return {props: {_project: {}}};
