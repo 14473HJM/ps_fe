@@ -13,7 +13,6 @@ import CardActions from '@mui/material/CardActions';
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import Dialog from '@mui/material/Dialog';
@@ -26,13 +25,14 @@ import {getToken} from "next-auth/jwt";
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
+import EditIcon from "@mui/icons-material/Edit";
 
-export function CodeFrameworksTable({ codeFrameworks }) {
+export function CodeLanguagesTable({ codeLanguages }) {
     const [rowEditable, setRowEditable] = React.useState(0);
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
     const [openDialog, setOpenDialog] = React.useState(false);
     const { data: session, status } = useSession()
-    const [cf, setCf] = React.useState(codeFrameworks)
+    const [cl, setCl] = React.useState(codeLanguages)
 
     console.log(session);
 
@@ -51,10 +51,10 @@ export function CodeFrameworksTable({ codeFrameworks }) {
 
     }
 
-     const handleSave = async (event, id, codeFramework) => {
+    const handleSave = async (event, id, codeLanguage) => {
         event.preventDefault();
-        console.log(codeFramework);
-        codeFramework = await put(id, codeFramework, session.user.access_token)
+        console.log(codeLanguage);
+        codeLanguage = await put(id, codeLanguage, session.user.access_token)
         setRowEditable(0);
         refreshContent();
     }
@@ -78,17 +78,17 @@ export function CodeFrameworksTable({ codeFrameworks }) {
     const refreshContent = async () => {
         const response = await getCodeFrameworks(session.user.access_token);
         if(response) {
-            setCf(response);
+            setCl(response);
         }
     }
 
     const handleChangeRow = (id, event) => {
         event.preventDefault();
-        let result = cf.map((c, id) => {
-           return c.id == id ? {...c, name: event.target.value} : {...data}
+        let result = cl.map((c, id) => {
+            return c.id == id ? {...c, name: event.target.value} : {...data}
         });
-        setCf(result);
-        console.log(cf);
+        setCl(result);
+        console.log(cl);
         //rowValue = event.target.value;
     }
 
@@ -96,54 +96,53 @@ export function CodeFrameworksTable({ codeFrameworks }) {
         <React.Fragment>
             <Box sx={{display: 'flex', mr: 10}}>
                 <Typography component="h1" variant="h5" color="primary" gutterBottom mr={10}>
-                    Code Framework
+                    Code Language
                 </Typography>
-                <Fab color="success" aria-label="add" size="medium" sx={{mt: 0,}}
+                <Fab color="success" aria-label="add" size="medium" sx={{mt: 0}}
                      onClick={() => {}}>
                     <AddIcon />
                 </Fab>
             </Box>
-            <Typography component="body1" variant="body1" color="info" gutterBottom mr={10} mb={3}>
-                Esta es la lista de diferentes frameworks de desarrollo que estarán disponibles como selección por parte de
+            <Typography component="body1" variant="body1" color="info" gutterBottom mr={10}>
+                Esta es la lista de diferentes lenguajes de programación que estarán disponibles como selección por parte de
                 los estudiantes que desarrollan un nuevo proyecto.
             </Typography>
-            <Table size="small">
+            <Table size="small" width={1}>
                 <TableHead>
                     <TableRow>
                         <TableCell>Id</TableCell>
                         <TableCell>Nombre</TableCell>
                         <TableCell>Tipo</TableCell>
-                        <TableCell>Descripción</TableCell>
                         <TableCell>Acción</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {cf.map((row) =>
+                    {cl ? cl.map((row) =>
                         <TableRow key={row.id} selected={handleEditable(row.id)}>
                             <TableCell>{row.id}</TableCell>
                             <TableCell contentEditable={handleEditable(row.id)} onChange={(e) => handleChangeRow(row.name, e)}>{row.name}</TableCell>
                             <TableCell contentEditable={handleEditable(row.id)}>{row.type}</TableCell>
-                            <TableCell contentEditable={handleEditable(row.id)}>{row.description}</TableCell>
                             <TableCell width={150}>
                                 <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }}>
-                                {handleEditable(row.id) ?
-                                    <Fab color="primary" aria-label="edit" size="small">
-                                    <SaveIcon fontSize={"small"} onClick={(e) => handleSave(e, row.id, row)}/>
-                                    </Fab>
-                                    :
-                                    <React.Fragment>
+                                    {handleEditable(row.id) ?
                                         <Fab color="primary" aria-label="edit" size="small">
-                                            <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, row.id)}/>
+                                            <SaveIcon fontSize={"small"} onClick={(e) => handleSave(e, row.id, row)}/>
                                         </Fab>
-                                        <Fab color="error" aria-label="edit" size="small">
-                                            <DeleteIcon fontSize={"small"} onClick={(e) => handleDelete(e, row.id)}/>
-                                        </Fab>
-                                    </React.Fragment>
-                                }
+                                        :
+                                        <React.Fragment>
+                                            <Fab color="primary" aria-label="edit" size="small">
+                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, row.id)}/>
+                                            </Fab>
+                                            <Fab color="error" aria-label="edit" size="small">
+                                                <DeleteIcon fontSize={"small"} onClick={(e) => handleDelete(e, row.id)}/>
+                                            </Fab>
+                                        </React.Fragment>
+                                    }
                                 </Box>
                             </TableCell>
                         </TableRow>
-                    )}
+                    ) : null
+                    }
                 </TableBody>
             </Table>
             <Dialog
@@ -172,63 +171,7 @@ export function CodeFrameworksTable({ codeFrameworks }) {
     );
 }
 
-export function CodeFrameworksCard({codeFramework}) {
-    console.log(codeFramework);
-    console.log({codeFramework})
-    return(
-        <Card
-            sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-        >
-            <CardMedia
-                component="img"
-                sx={{
-                    16:9,
-                    pt: '0%',
-                    flexGrow: 2
-                }}
-                image={codeFramework.imageLink}
-                alt={codeFramework.name}
-            />
-            <CardContent sx={{
-                flexGrow: 1
-            }}>
-                <Typography gutterBottom variant="h5" component="h2">
-                    {codeFramework.name}
-                </Typography>
-                <Typography>
-                    {codeFramework.description}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small">View</Button>
-                <Button size="small">Edit</Button>
-            </CardActions>
-        </Card>
-    );
-}
-
-export function CodeFrameworksCardList({codeFrameworks}) {
-    console.log(codeFrameworks);
-    if (codeFrameworks && codeFrameworks.length) {
-        console.log("Entre enla renderizacion")
-        return (
-            <Container sx={{py: 8}} maxWidth="md">
-                {/* End hero unit */}
-                <Grid container spacing={1}>
-                    {codeFrameworks.map((codeFramework) => (
-                        <Grid item key={codeFramework.id} xs={12} sm={6} md={6}>
-                            <CodeFrameworksCard codeFramework={codeFramework}/>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
-        );
-    } else {
-        return null;
-    }
-}
-
-export async function put(id, codeFramework, access_token) {
+export async function put(id, codeLanguage, access_token) {
     if(access_token != null) {
         const options = {
             method: 'PUT',
@@ -238,17 +181,17 @@ export async function put(id, codeFramework, access_token) {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + access_token,
             },
-            body: JSON.stringify(codeFramework),
+            body: JSON.stringify(codeLanguage),
         };
         // Fetch data from external API
-        const res = await fetch(`http://localhost:8080/ps/config/code/frameworks/${id}`, options);
+        const res = await fetch(`http://localhost:8080/ps/config/code/languages/${id}`, options);
         console.log(res);
-        codeFramework = await res.json();
+        codeLanguage = await res.json();
         // Pass data to the page via props
-        console.log(codeFramework);
-        return {codeFramework}
+        console.log(codeLanguage);
+        return {codeLanguage}
     } else {
-        return {codeFramework};
+        return {codeLanguage};
     }
 }
 
@@ -264,12 +207,12 @@ export async function getCodeFrameworks(access_token) {
             }
         };
         // Fetch data from external API
-        const res = await fetch('http://localhost:8080/ps/config/code/frameworks', options);
+        const res = await fetch('http://localhost:8080/ps/config/code/languages', options);
         console.log(res);
-        const codeFrameworks = await res.json();
+        const codeLanguages = await res.json();
         // Pass data to the page via props
-        console.log(codeFrameworks);
-        return {codeFrameworks}
+        console.log(codeLanguages);
+        return {codeLanguages}
     } else {
         return null;
     }

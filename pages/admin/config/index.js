@@ -9,6 +9,8 @@ import {CodeFrameworksCardList, CodeFrameworksTable} from "../../../components/c
 import {Title1} from "../../../components/common/title";
 import {getToken} from "next-auth/jwt";
 import {getCodeFrameworks} from "../../api/config";
+import {CodeLanguagesTable} from "../../../components/config/code-language";
+import {PlatformsTable} from "../../../components/config/platform";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -45,8 +47,12 @@ function a11yProps(index) {
 
 
 export default function Config(props) {
+    console.log(props);
     const [value, setValue] = React.useState(0);
     const [codeFrameworks, setCodeFrameworks ] = React.useState(props.codeFrameworks);
+    const [codeLanguages, setCodeLanguages ] = React.useState(props.codeLanguages);
+    const [platforms, setPlatforms ] = React.useState(props.platforms);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -67,21 +73,20 @@ export default function Config(props) {
                     sx={{borderRight: 1, borderColor: 'divider'}}
                 >
                     <Tab label="Code Frameworks" {...a11yProps(0)} />
-                    <Tab label="Item Two" {...a11yProps(1)} />
-                    <Tab label="Item Three" {...a11yProps(2)} />
-                    <Tab label="Item Four" {...a11yProps(3)} />
-                    <Tab label="Item Five" {...a11yProps(4)} />
-                    <Tab label="Item Six" {...a11yProps(5)} />
-                    <Tab label="Item Seven" {...a11yProps(6)} />
+                    <Tab label="Code Languages" {...a11yProps(1)} />
+                    <Tab label="Platform" {...a11yProps(2)} />
+                    <Tab label="Technology" {...a11yProps(3)} />
+                    <Tab label="UserInterface" {...a11yProps(4)} />
+                    <Tab label="Cohort" {...a11yProps(5)} />
                 </Tabs>
                 <TabPanel value={value} index={0}>
-                        <CodeFrameworksTable codeFrameworks={codeFrameworks}/>
+                    <CodeFrameworksTable codeFrameworks={codeFrameworks}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    Item Two
+                    <CodeLanguagesTable codeLanguages={codeLanguages} />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    Item Three
+                    <PlatformsTable platforms={platforms} />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
                     Item Four
@@ -91,9 +96,6 @@ export default function Config(props) {
                 </TabPanel>
                 <TabPanel value={value} index={5}>
                     Item Six
-                </TabPanel>
-                <TabPanel value={value} index={6}>
-                    Item Seven
                 </TabPanel>
             </Box>
         );
@@ -124,14 +126,16 @@ export async function getServerSideProps(context) {
             }
         };
         // Fetch data from external API
-        const res = await fetch('http://localhost:8080/ps/config/code/frameworks', options);
-        console.log(res);
-        const codeFrameworks = await res.json();
+        const resCodeFrameworks = await fetch('http://localhost:8080/ps/config/code/frameworks', options);
+        const resCodeLanguages = await fetch('http://localhost:8080/ps/config/code/languages', options);
+        const resPlatforms = await fetch('http://localhost:8080/ps/config/platforms', options);
+        const codeFrameworks = await resCodeFrameworks.json();
+        const codeLanguages = await resCodeLanguages.json();
+        const platforms = await resPlatforms.json();
         // Pass data to the page via props
-        console.log(codeFrameworks);
-        return {props: {codeFrameworks}}
+        return {props: {codeFrameworks, codeLanguages, platforms}}
     } else {
-        return {props: {_project: {}}};
+        return {props: {}};
     }
 }
 
