@@ -44,3 +44,22 @@ export function Copyright(props) {
     </Typography>
   );
 }
+
+export function PsLogoCard(props) {
+  const images = {
+    black: '/ps_n.png',
+    white: '/ps_b.png',
+  };
+
+  return (
+      <Link color="inherit" href="https://frc.utn.edu.ar/">
+        <CardMedia
+            component="img"
+            width="150px"
+            image={images[props.color || 'black']}
+            alt="Practica Supervisada Admin"
+            {...props}
+        />
+      </Link>
+  );
+}

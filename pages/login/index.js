@@ -36,12 +36,6 @@ export default function Login({ csrfToken }) {
                     }}
                 >
                     <LogoCard sx={{ mt: 8, mb: 4 }} color="black" />
-                    {/*<Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>*/}
-                    {/*    <LockOutlinedIcon />*/}
-                    {/*</Avatar>*/}
-                    {/*<Typography component="h1" variant="h5">*/}
-                    {/*    Sign in*/}
-                    {/*</Typography>*/}
                     <Box component="form"
                          onSubmit={handleSubmit}
                          noValidate sx={{ mt: 1 }}
