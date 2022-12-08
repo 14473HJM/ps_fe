@@ -9,7 +9,6 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 
 export default function PersonlInformation(props) {
-
     const student = props.student;
     const setStudent = props.setStudent;
     const handleNext = props.handleNext;
@@ -156,7 +155,7 @@ export default function PersonlInformation(props) {
                             label="Identification Type"
                             fullWidth
                             required
-                            defaultValue={student.personIdentification.identificationType? student.personIdentification.identificationType : "DNI"}
+                            defaultValue={student.personIdentification.identificationType || "DNI"}
                             onBlur={handleIdType}
                         >
                             <MenuItem value="DNI">DNI</MenuItem>
@@ -198,12 +197,12 @@ export default function PersonlInformation(props) {
                         sx={{ mt: 3, ml: 1 }}
                         disabled={!formValidation}
                         type={"submit"}
-                    >Next</Button>
+                    >Siguiente</Button>
                 </Box>
             </Box>
-            <Box id="errors" sx={{ mt: 1 }}>
+            {/* <Box id="errors" sx={{ mt: 1 }}>
                 {handleErrors()}
-            </Box>
+            </Box> */}
         </React.Fragment>
     );
 }

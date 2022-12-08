@@ -13,7 +13,6 @@ import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
-import {useEffect} from "react";
 import Divider from "@mui/material/Divider";
 import {useSession} from "next-auth/react";
 import axios from "axios";
@@ -22,6 +21,11 @@ export default function ProjectConversation(props) {
 
     console.log(props);
     const[ conversation, setConversation ]  = React.useState(props.project.conversation);
+    // const[project, setProject]  = React.useState({
+    //     conversation: {
+    //         comments: [],
+    //     },
+    // });
 
     const project = props.project;
 
@@ -53,6 +57,12 @@ export default function ProjectConversation(props) {
             console.log(conversation);
         }
         document.getElementById("conversation")
+        // const comments = project.conversation.comments;
+        // comments.push(comment)
+        // setProject({
+        //     ...project,
+        //     comments,
+        // });
     };
 
     return(
@@ -89,6 +99,7 @@ export default function ProjectConversation(props) {
                             )) :
                             (<></>)
                     }
+                    {/* project.conversation.comments.map(comment => <CommentCard {...comment} />) */}
                 </Paper>
             </Box>
 
@@ -97,22 +108,21 @@ export default function ProjectConversation(props) {
 
 }
 
-export function getCommentCard(comment) {
-    console.log(comment);
-    const sender = comment.commentator.name.concat(' ', comment.commentator.lastName);
+const CommentCard = ({ commentator, comment, createdDate }) => {
+    const sender = `${commentator.name} ${commentator.lastName}`;
     return(
         <React.Fragment>
         <Grid container wrap="nowrap" spacing={2}>
             <Grid item>
-                <Avatar alt={sender} src={comment.commentator.imageProfile} />
+                <Avatar alt={sender} src={commentator.imageProfile} />
             </Grid>
             <Grid justifyContent="left" item xs zeroMinWidth>
                 <h4 style={{ margin: 0, textAlign: "left" }}>{sender}</h4>
                 <p style={{ textAlign: "left" }}>
-                    {comment.comment}
+                    {comment}
                 </p>
                 <p style={{ textAlign: "left", color: "gray" }}>
-                    posted el {comment.createdDate}
+                    posted el {createdDate}
                 </p>
             </Grid>
         </Grid>

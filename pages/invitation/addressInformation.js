@@ -82,8 +82,7 @@ export default function AddressInformation(props) {
             student.address.streetNumber != null &&
             student.address.province &&
             student.address.city != null &&
-            student.address.zipCode != null &&
-            student.address.detail != null){
+            student.address.zipCode != null){
             setFormValidation(true);
         } else {
             setFormValidation(false);
@@ -180,7 +179,7 @@ export default function AddressInformation(props) {
                             <MenuItem value="Chubut">Chubut</MenuItem>
                             <MenuItem value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</MenuItem>
                             <MenuItem value="Corrientes">Corrientes</MenuItem>
-                            <MenuItem value="Córdoba">Córdoba</MenuItem>
+                            <MenuItem value="C">Córdoba</MenuItem>
                             <MenuItem value="Entre Ríos">Entre Ríos</MenuItem>
                             <MenuItem value="Formosa">Formosa</MenuItem>
                             <MenuItem value="Jujuy">Jujuy</MenuItem>
@@ -224,7 +223,7 @@ export default function AddressInformation(props) {
                         sx={{ mt: 3, ml: 1 }}
                         disabled={!formValidation}
                         type={"submit"}
-                    >Next</Button>
+                    >Siguiente</Button>
                 </Box>
             </Box>
         </React.Fragment>

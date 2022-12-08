@@ -3,9 +3,9 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import axios from "axios";
+import LoadingButton from '@mui/lab/LoadingButton';
 import TextField from "@mui/material/TextField";
+import usePost from '../../hooks/usePost';
 
 const regexp_password = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){8,15}$/";
 
@@ -13,22 +13,23 @@ export default function Review(props) {
 
     const student = props.student;
     const [user, setUser] = React.useState({
-        person: {student},
         userName: props.legajo,
+        password: null,
     });
     const [formValidation, setFormValidation] = React.useState(false);
-    const [postResponse, setPostResponse] = React.useState(null);
+    const [body, setBody] = React.useState(null);
+    const { data, error, loading } = usePost('/api/students', body);
 
     const handleNext = props.handleNext;
     const handleBack = props.handleBack;
 
     const handlePassword = (event) => {
         event.preventDefault();
-        if(!event.target.value && !event.target.value.length > 6) {
-            user.password = null;
-        } else {
-            user.password = event.target.value;
-            setUser(user);
+        if(event.target.value && event.target.value.length > 6) {
+            setUser({
+                ...user,
+                password: event.target.value,
+            })
         }
         handleChangeForm();
     };
@@ -41,21 +42,31 @@ export default function Review(props) {
         }
     }
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        const data = postUser(user)
-        if(data) {
-            handleNext();
-        } else {
-            alert("Algo salio mal")
-        }
+    function handleSubmit(e) {
+        e.preventDefault();
+        setBody({
+            ...student,
+            user,
+        });
     }
+
+    React.useEffect(() => {
+        setBody(null);
+        if (data) {
+            console.log(data);
+            handleNext();
+        };
+        if (error) {
+            alert('Algo malir sal');
+            console.log(error)
+        };
+    }, [data, error]);
 
     return (
         <React.Fragment>
             <Box component="form"
-                 onSubmit={handleSubmit}
-                 noValidate sx={{ mt: 1 }}
+                onSubmit={handleSubmit}
+                noValidate sx={{ mt: 1 }}
             >
                 <Typography variant="h3" gutterBottom>
                     Detalle del alta
@@ -208,40 +219,4 @@ function getSocialNetworkInfo(socialNetwork) {
             <Typography gutterBottom variant="h6">{title}: {socialNetwork.profileName}</Typography>
         </Grid>
     );
-}
-
-function postUser(user) {
-    return axios({
-        method: 'post',
-        url: 'http://localhost:8080/ps/users',
-        data: user,
-        headers: {
-            'accept': '*/*',
-            'charset': 'UTF-8',
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin':'*',
-        },
-        mode: 'no-cors',
-    }).then(function (response) {
-        console.log(response);
-        return response.data;
-    }).catch(function (error) {
-        if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.log(error.request);
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log('Error', error.message);
-        }
-        console.log(error.config);
-        alert(error);
-    });
 }

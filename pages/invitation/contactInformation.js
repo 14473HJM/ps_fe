@@ -208,7 +208,7 @@ export default function ContactInformation(props) {
                         sx={{ mt: 3, ml: 1 }}
                         disabled={!formValidation}
                         type={"submit"}
-                    >Next</Button>
+                    >Siguiente</Button>
                 </Box>
             </Box>
             <Modal
