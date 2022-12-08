@@ -71,7 +71,7 @@ function Row(props) {
                                             :
                                             null }
                                         <TableCell>Estado</TableCell>
-                                        <TableCell>Cumpleaños</TableCell>
+                                        <TableCell>Fecha de Nacimiento</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

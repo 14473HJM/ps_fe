@@ -118,19 +118,19 @@ export default function Invitations(props) {
         // console.log(status);
         if(status === 'ACTIVE') {
             return (<Fab color="success" variant="extended" size="small" aria-label="add">
-                    <CheckIcon sx={{ mr: 1 }} />{status}
+                    <CheckIcon sx={{ mr: 1 }} />ACTIVO
                     </Fab>);
         } else if (status === 'USED') {
             return (<Fab variant="extended" size="small" color="info" aria-label="add">
-                    <DoneAllIcon sx={{ mr: 1 }} />{status}
+                    <DoneAllIcon sx={{ mr: 1 }} />USADO
                     </Fab>);
         } else if(status === 'CANCELED') {
             return (<Fab variant="extended" size="small" color="error" aria-label="add">
-                    <CancelIcon sx={{ mr: 1 }} />{status}
+                    <CancelIcon sx={{ mr: 1 }} />CANCELADO
                     </Fab>);
         } else if (status === 'OVERDUE') {
             return (<Fab variant="extended" size="small" color="warning" aria-label="add">
-                    <EventBusyIcon sx={{ mr: 1 }} />{status}
+                    <EventBusyIcon sx={{ mr: 1 }} />VENCIDO
                     </Fab>);
         } else {
             return null;
@@ -152,7 +152,7 @@ export default function Invitations(props) {
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Id</TableCell>
+                        {/*<TableCell>Id</TableCell>*/}
                         <TableCell>Legajo</TableCell>
                         <TableCell>Email</TableCell>
                         <TableCell>Estado</TableCell>
@@ -163,7 +163,7 @@ export default function Invitations(props) {
                 <TableBody>
                     {invitations.map((row) =>
                         <TableRow key={row.id} selected={handleEditable(row.id)}>
-                            <TableCell>{row.id}</TableCell>
+                            {/*<TableCell>{row.id}</TableCell>*/}
                             <TableCell contentEditable={handleEditable(row.id)} onChange={(e) => handleChangeRow(row.legajo, e)}>{row.legajo}</TableCell>
                             <TableCell contentEditable={handleEditable(row.id)}>{row.email}</TableCell>
                             <TableCell>

@@ -66,10 +66,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
         if (response && response.ok) {
             const row = await response.json();
             rows.push(row);
-            setRows({
-                ...rows,
-                row
-            });
+            setRows(rows);
             console.log(rows);
             handleOpenSnackbar("S")
         } else {
