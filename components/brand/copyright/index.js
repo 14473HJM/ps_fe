@@ -5,8 +5,8 @@ import CardMedia from '@mui/material/CardMedia';
 
 export function LogoCard(props) {
   const images = {
-    black: '/UTN_LOGO_NEGRO_transparente.png',
-    white: '/UTN_LOGO_BLANCO_transparente.png',
+    black: '/tup_completo_blanco_transparente.png',
+    white: '/tup_completo_blanco_transparente.png',
   };
 
   return (

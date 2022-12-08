@@ -59,10 +59,10 @@ export default function Layout({ children }) {
                         noWrap
                         sx={{ flexGrow: 1 }}
                     >
-                        <CardMedia sx={{width: 250}}
+                        <CardMedia sx={{width: 200}}
                             component="img"
                             width="25px"
-                            image='/tup_completo_blanco_transparente.png'
+                            image='/psa_b.png'
                             alt="Tecnicatura Universitaria en Programacion"
                         />
                     </Typography>
@@ -83,14 +83,14 @@ export default function Layout({ children }) {
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                         px: [1],
-                        pt: [4]
+                        pt: [2]
                     }}
                 >
                     <IconButton onClick={toggleDrawer}>
                         <ChevronLeftIcon />
                     </IconButton>
                 </Toolbar>
-                <Divider sx={{pt:4}}/>
+                <Divider sx={{pt:2}}/>
                 <List component="nav">
                     {(session && session.user.roles.includes("ADMIN")) ? mainAdminListItems :
                         (session && session.user.roles.includes("PROFESSOR")) ? mainProfessorListItems : mainStudentListItems}

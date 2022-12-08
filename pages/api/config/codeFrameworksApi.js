@@ -8,7 +8,6 @@ export const getCodeFrameworks = async (session) => {
         const options = {
             method: 'GET',
             headers: myHeaders,
-            mode: 'cors',
             cache: 'default',
         };
         const res = await fetch('http://localhost:8080/ps/config/code/frameworks', options);
@@ -25,10 +24,9 @@ export const getCodeFramework = async (session, id) => {
         const options = {
             method: 'GET',
             headers: myHeaders,
-            mode: 'cors',
             cache: 'default',
         };
-        const res = await fetch(`http://localhost:8080/ps/projects/${id}`, options);
+        const res = await fetch(`http://localhost:8080/ps/config/code/frameworks/${id}`, options);
         console.log(res);
         return res;
     }
@@ -42,7 +40,6 @@ export const postCodeFramework = async (session, codeFramework) => {
         const options = {
             method: 'POST',
             headers: myHeaders,
-            mode: 'cors',
             cache: 'default',
             body: JSON.stringify(codeFramework),
         };
@@ -60,11 +57,10 @@ export const putCodeFramework = async (session, codeFramework) => {
         const options = {
             method: 'PUT',
             headers: myHeaders,
-            mode: 'cors',
             cache: 'default',
             body: JSON.stringify(codeFramework),
         };
-        const res = await fetch(`http://localhost:8080/ps/projects/${codeFramework.id}`, options);
+        const res = await fetch(`http://localhost:8080/ps/config/code/frameworks/${codeFramework.id}`, options);
         console.log(res);
         return res;
     }
@@ -78,10 +74,9 @@ export const deleteCodeFramework = async (session, codeFramework) => {
         const options = {
             method: 'DELETE',
             headers: myHeaders,
-            mode: 'cors',
             cache: 'default',
         };
-        const res = await fetch(`http://localhost:8080/ps/projects/${codeFramework.id}`, options);
+        const res = await fetch(`http://localhost:8080/ps/config/code/frameworks/${codeFramework.id}`, options);
         console.log(res);
         return res;
     }

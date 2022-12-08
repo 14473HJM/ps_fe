@@ -23,7 +23,7 @@ export default function Projects({projects}) {
                             <Avatar><WorkIcon /></Avatar>
                         }
                     </ListItemAvatar>
-                    <ListItemText primary={project.name} secondary={project.createdDate} />
+                    <ListItemText primary={project.name} secondary={project.projectStatus} />
                     <ListItemText primary={"Proyecto del tipo " + project.projectType} secondary={"Descripción: " + project.description} />
                     </ListItemButton>
                 </ListItem>

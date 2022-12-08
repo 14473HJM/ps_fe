@@ -29,7 +29,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, postApi, deleteApi, title, description }) {
 
-    const [rowEditable, setRowEditable] = React.useState(0);
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
     const [openDialog, setOpenDialog] = React.useState(false);
     const {data: session, status} = useSession()
@@ -62,7 +61,12 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
     };
     const handleSubmitModal = async (event) => {
         event.preventDefault();
-        const response = await postApi(session, modalRow);
+        let response;
+        if(modalRow.id == null) {
+            response = await postApi(session, modalRow);
+        } else {
+            response = await putApi(session, modalRow);
+        }
         if (response && response.ok) {
             const row = await response.json();
             rows.push(row);
@@ -78,8 +82,8 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
         event.preventDefault();
         const value = event.target.value;
         const field = event.target.name;
-        modalRow[field] = value;
-        setModalRow(modalRow);
+        //modalRow[field] = value;
+        setModalRow({...modalRow, [field]:value});
         console.log(modalRow);
     }
     const handleNew = (event) => {
@@ -106,19 +110,23 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
     //UPDATE-DELETE_CREATE HANDLERS
     const handleEdit = (event, row) => {
         event.preventDefault();
-        setRowEditable(row.id);
         setModalRow(row);
         handleOpenModal();
     }
     const handleDelete = (event, row) => {
         event.preventDefault();
-        setRowOnDelete(row.id);
+        console.log(row);
+        setRowOnDelete(row);
         handleClickOpenDialog();
     }
     const handleConfirmationDelete = async (event) => {
         event.preventDefault();
-        const result = await deleteApi(rowOnDelete);
-        if (result == 0) {
+        const response = await deleteApi(session, rowOnDelete);
+        if (response && response.ok) {
+            const indexRemoved = rows.indexOf(rowOnDelete);
+            rows.slice(indexRemoved, 1);
+            setRows(rows);
+            console.log(rows);
             handleOpenSnackbar("S")
         } else {
             handleOpenSnackbar("E")
@@ -219,7 +227,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                     {"¿Seguro que desea borrar esta configuración?"}
                 </DialogTitle>
                 <DialogTitle id="alert-dialog-title">
-                    {"Object ID " + {rowOnDelete}.rowOnDelete}
+                    Object ID  {rowOnDelete.name}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">

@@ -100,12 +100,6 @@ export const mainAdminListItems = (
 
 export const mainStudentListItems = (
     <React.Fragment>
-        <ListItemButton href='/dashboard'>
-            <ListItemIcon>
-                <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-        </ListItemButton>
         <ListItemButton  href='/projects'>
             <ListItemIcon>
                 <WorkIcon />
