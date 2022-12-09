@@ -8,12 +8,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
-import Divider from "@mui/material/Divider";
 import {getContactCard, getSocialNetworkCard} from "../../components/people/contact";
-import PersonalInformation from "./personalInformation";
-import AddressInformation from "./addressInformation";
 import Modal from "@mui/material/Modal";
-
 
 export default function ContactInformation(props) {
 
@@ -132,7 +128,7 @@ export default function ContactInformation(props) {
 
             student.personalContacts.map(
                 (contact) => {
-                    if(contact.contactType === 'CELLPHONE') {
+                    if(contact.contactType === 'PHONE') {
                         anyPersonal = true;
                     }
                 });
@@ -267,7 +263,6 @@ export default function ContactInformation(props) {
                             >
                                 <MenuItem value="EMAIL">E-mail</MenuItem>
                                 <MenuItem value="PHONE">Télefono</MenuItem>
-                                <MenuItem value="CELLPHONE">Celular</MenuItem>
                             </Select>
                         )}
                     </Grid>
