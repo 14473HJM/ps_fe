@@ -4,8 +4,6 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import ContactForm from "../../components/people/contact";
-import Layout from "../../components/layout/layout";
 import ProjectInformation from "../../components/project/projectInformation";
 import ProjectMonitoring from "../../components/project/projectMonitoring";
 import ProjectAttachments from "../../components/project/projectAttachments";
