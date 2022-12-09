@@ -17,6 +17,7 @@ import {getToken} from "next-auth/jwt";
 import Avatar from "@mui/material/Avatar";
 import LockResetIcon from '@mui/icons-material/LockReset';
 import Fab from "@mui/material/Fab";
+import Divider from "@mui/material/Divider";
 
 function Row(props) {
     const { row } = props;
@@ -62,8 +63,12 @@ function Row(props) {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Tipo Usuario</TableCell>
-                                        <TableCell>Nombre</TableCell>
-                                        <TableCell>Apellido</TableCell>
+                                        {row.person.personalContacts ?
+                                        <TableCell>Contactos Personales</TableCell>
+                                            : null }
+                                        {row.person.universityContacts ?
+                                        <TableCell>Contactos Universitarios</TableCell>
+                                            : null }
                                         {row.person.personIdentification ?
                                             <TableCell>{row.person.personIdentification.identificationType}</TableCell>
                                             :
@@ -80,8 +85,32 @@ function Row(props) {
                                 <TableBody>
                                     <TableRow key={row.person.id}>
                                         <TableCell component="th" scope="row">{row.person.objectType}</TableCell>
-                                        <TableCell component="th" scope="row">{row.person.name}</TableCell>
-                                        <TableCell component="th" scope="row">{row.person.lastName}</TableCell>
+                                        {row.person.personalContacts ?
+                                        <TableCell component="th" scope="row">
+                                            {
+                                                row.person.personalContacts.map(c =>
+                                                    <Typography variant="body22">
+                                                        <pre style={{ fontFamily: 'inherit' }}>
+                                                        {c.contactType + ': ' + c.value}
+                                                        </pre>
+                                                    </Typography>
+                                                )
+                                            }
+                                        </TableCell>
+                                            : null }
+                                        {row.person.universityContacts ?
+                                        <TableCell component="th" scope="row">
+                                            {
+                                                row.person.universityContacts.map(c =>
+                                                    <Typography variant="body22">
+                                                        <pre style={{ fontFamily: 'inherit' }}>
+                                                        {c.contactType + ': ' + c.value}
+                                                        </pre>
+                                                    </Typography>
+                                                )
+                                            }
+                                        </TableCell>
+                                            : null }
                                         {row.person.personIdentification ?
                                             <TableCell>{row.person.personIdentification.identification}</TableCell>
                                             :

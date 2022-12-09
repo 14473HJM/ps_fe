@@ -49,7 +49,6 @@ export async function getServerSideProps(context) {
     if(token != null) {
         const {access_token} = token
         const {userId} = token
-
         const options = {
             headers: {
                 'accept': '*/*',
@@ -60,7 +59,7 @@ export async function getServerSideProps(context) {
         };
 
         // Fetch data from external API
-        const res = await fetch(`http://localhost:8080/ps/projects?userId=` + userId, options)
+        const res = await fetch(`http://localhost:8080/ps/projects`, options)
         const projects = await res.json()
         // Pass data to the page via props
         return {props: {projects}}
