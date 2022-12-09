@@ -22,6 +22,12 @@ import TextField from "@mui/material/TextField";
 import Modal from "@mui/material/Modal";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TableContainer from "@mui/material/TableContainer";
+import TablePagination from "@mui/material/TablePagination";
+import {visuallyHidden} from "@mui/utils";
+import TableSortLabel from "@mui/material/TableSortLabel";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -30,14 +36,24 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, postApi, deleteApi, title, description }) {
 
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
+    const [rowDeleteIndex, setRowDeleteIndex] = React.useState(0);
     const [openDialog, setOpenDialog] = React.useState(false);
     const {data: session, status} = useSession()
-    //const [_rows, setRows] = React.useState(rows)
     const [modalOpen, setModalOpen] = React.useState(false);
     const [modalRow, setModalRow] = React.useState(null);
     const [modalSaveDisabled, setModalSaveDisabled] = React.useState(true);
     const [openSnackbarOK, setOpenSnackbarOK] = React.useState(false);
     const [openSnackbarError, setOpenSnackbarError] = React.useState(false);
+    const [seeDeleted, setSeeDeleted] = React.useState(false);
+    const [page, setPage] = React.useState(0);
+    const [dense, setDense] = React.useState(false);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('id');
+
+    const handleChangeSwitchDeleted = (event) => {
+        setSeeDeleted(event.target.checked);
+    };
 
     const modalStyle = {
         position: 'absolute',
@@ -113,32 +129,36 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
         setModalRow(row);
         handleOpenModal();
     }
-    const handleDelete = (event, row) => {
+    const handleDelete = (event, row, index) => {
         event.preventDefault();
         console.log(row);
         setRowOnDelete(row);
+        setRowDeleteIndex(index);
         handleClickOpenDialog();
     }
     const handleConfirmationDelete = async (event) => {
         event.preventDefault();
         const response = await deleteApi(session, rowOnDelete);
         if (response && response.ok) {
-            const indexRemoved = rows.indexOf(rowOnDelete);
-            rows.slice(indexRemoved, 1);
+            rows.splice(rowDeleteIndex, 1);
+            rowOnDelete.recordStatus = 'DELETED';
+            rows.push(rowOnDelete);
             setRows(rows);
             console.log(rows);
             handleOpenSnackbar("S")
         } else {
             handleOpenSnackbar("E")
         }
-        handleCloseDialog();
+        handleCloseDialog(event);
     }
     //DIALOG HANDLERS
     const handleClickOpenDialog = () => {
         setOpenDialog(true);
     };
-    const handleCloseDialog = () => {
+    const handleCloseDialog = (event) => {
+        event.preventDefault();
         setOpenDialog(false);
+        setRowDeleteIndex(0);
     };
     //SNACKBARS HANDLERS
     const handleOpenSnackbar = (t) => {
@@ -161,9 +181,53 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
             setOpenSnackbarOK(false);
         }
     };
+    //PAGING & SORTING
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+    const handleChangeDense = (event) => {
+        setDense(event.target.checked);
+    };
+    function getComparator(order, orderBy) {
+        return order === 'desc'
+            ? (a, b) => descendingComparator(a, b, orderBy)
+            : (a, b) => -descendingComparator(a, b, orderBy);
+    };
+    function stableSort(array, comparator) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = comparator(a[0], b[0]);
+            if (order !== 0) {
+                return order;
+            }
+            return a[1] - b[1];
+        });
+        return stabilizedThis.map((el) => el[0]);
+    };
+    function descendingComparator(a, b, orderBy) {
+        if (b[orderBy] < a[orderBy]) {
+            return -1;
+        }
+        if (b[orderBy] > a[orderBy]) {
+            return 1;
+        }
+        return 0;
+    }
+    const createSortHandler = (property) => (event) => {
+        handleRequestSort(event, property);
+    };
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
 
     return (
-        <React.Fragment>
+        <React.Fragment >
             <Box sx={{display: 'flex', mr: 10}}>
                 <Typography component="h1" variant="h5" color="primary" gutterBottom mr={4}>
                     {title}
@@ -177,22 +241,54 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
             <Typography component="body1" variant="body1" color="info" gutterBottom>
                 {description}
             </Typography>
-            <Table size="small" sx={{mt:5}}>
+
+            <Box sx={{display: 'flex', mr: 10, mt:3}}>
+            <FormControlLabel control={
+                <Switch color="error" checked={seeDeleted} onChange={handleChangeSwitchDeleted}/>
+            } label="Ver Borrados" />
+                <FormControlLabel
+                    control={<Switch checked={dense} onChange={handleChangeDense} />}
+                    label="Dense padding"
+                />
+            </Box>
+            <TableContainer >
+            <Table size={dense ? 'small' : 'medium'} sx={{mt:5}} >
                 <TableHead>
                     <TableRow>
                     {columns.map((column) =>
                         column.visible ?
                         <TableCell
+                            key={column.id}
                             id={column.id}
                             variant={'head'}
-                        >{column.label}</TableCell>
+                            sortDirection={orderBy === column.id ? order : false}
+                        >
+                            <TableSortLabel
+                                active={orderBy === column.id}
+                                direction={orderBy === column.id ? order : 'asc'}
+                                onClick={createSortHandler(column.id)}
+                            >
+                                {column.label}
+                                {orderBy === column.id ? (
+                                    <Box component="span" sx={visuallyHidden}>
+                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                            {/*{column.label}*/}
+
+                        </TableCell>
                             : null
                     )}
                         <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows ? rows.map((row, index) =>
+                    {stableSort(rows, getComparator(order, orderBy))
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row, index) => //{
+                    //{rows ? rows.map((row, index) =>
+                        row.recordStatus != 'DELETED' && !seeDeleted ?
                         <TableRow key={row.id}>
                             {columns.map((c, index) => (
                                 c.visible ?
@@ -207,16 +303,62 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                                             <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, rows[index])}/>
                                         </Fab>
                                         <Fab color="error" aria-label="edit" size="small">
-                                            <DeleteIcon fontSize={"small"} onClick={(e) => handleDelete(e, rows[index])}/>
+                                            <DeleteIcon fontSize={"small"} onClick={(e) => handleDelete(e, rows[index], index)}/>
                                         </Fab>
                                     </React.Fragment>
                                 </Box>
                             </TableCell>
                         </TableRow>
-                    ) : null
+                            : seeDeleted ?
+                            <TableRow key={row.id}>
+                                {columns.map((c, index) => (
+                                    c.visible ?
+                                        row.recordStatus != 'DELETED' ?
+                                        // eslint-disable-next-line react/jsx-key
+                                        <TableCell>{row[c.id]}</TableCell>
+                                            : <TableCell sx={{ bgcolor: 'pink' }}>{row[c.id]}</TableCell>
+                                        : null
+                                ))}
+                                {row.recordStatus != 'DELETED' ?
+                                <TableCell width={150}>
+                                    <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }}>
+                                        <React.Fragment>
+                                            <Fab color="primary" aria-label="edit" size="small">
+                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, rows[index])}/>
+                                            </Fab>
+                                            <Fab color="error" aria-label="edit" size="small">
+                                                <DeleteIcon fontSize={"small"} onClick={(e) => handleDelete(e, rows[index], index)}/>
+                                            </Fab>
+                                        </React.Fragment>
+                                    </Box>
+                                </TableCell>
+                                    :
+                                <TableCell width={150} sx={{ bgcolor: 'pink' }}>
+                                    <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }}>
+                                        <React.Fragment>
+                                            <Fab color="primary" aria-label="edit" size="small">
+                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, rows[index])}/>
+                                            </Fab>
+                                        </React.Fragment>
+                                    </Box>
+                                </TableCell>
+                                }
+                            </TableRow>
+                            : null
+                    ) //: null
                     }
                 </TableBody>
             </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             <Dialog
                 open={openDialog}
                 onClose={handleCloseDialog}

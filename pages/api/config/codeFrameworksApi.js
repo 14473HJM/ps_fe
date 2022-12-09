@@ -1,7 +1,7 @@
 import {getHeaders} from "../common";
 
-export const getCodeFrameworks = async (session) => {
-    const myHeaders = await getHeaders(session);
+export const getCodeFrameworks = async (session, inactives) => {
+    const myHeaders = await getHeaders(session, inactives);
     if(!myHeaders) {
         return null
     } else {
@@ -16,8 +16,8 @@ export const getCodeFrameworks = async (session) => {
     }
 };
 
-export const getCodeFramework = async (session, id) => {
-    const myHeaders = await getHeaders(session);
+export const getCodeFramework = async (session, id, inactives) => {
+    const myHeaders = await getHeaders(session, inactives);
     if(!myHeaders) {
         return null
     } else {

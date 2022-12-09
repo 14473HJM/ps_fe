@@ -1,7 +1,7 @@
 import {getToken} from "next-auth/jwt";
 import * as React from "react";
 
-export const getHeaders = async (session) => {
+export const getHeaders = async (session, inactives) => {
     const {user} = session;
     const {access_token} = user;
     console.log(session);
@@ -13,6 +13,7 @@ export const getHeaders = async (session) => {
                 'charset': 'UTF-8',
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + access_token,
+                'x-inactives-objects': inactives,
             };
         return headers;
     } else {
