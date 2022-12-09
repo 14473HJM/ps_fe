@@ -35,7 +35,7 @@ export default function Login({ csrfToken }) {
                         alignItems: 'center',
                     }}
                 >
-                    <LogoCard sx={{ mt: 8, mb: 4 }} color="black" />
+                    <LogoCard sx={{ mt: 8, mb: 4 }} color="black" width={300} />
                     <Box component="form"
                          onSubmit={handleSubmit}
                          noValidate sx={{ mt: 1 }}

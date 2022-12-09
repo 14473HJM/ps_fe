@@ -24,7 +24,7 @@ export function LogoCard(props) {
       <Image
         src={images[props.color || 'black']}
         alt="Tecnicatura universitaria en programación"
-        width={150}
+        {...props}
       />
     </Link>
   );
@@ -45,7 +45,7 @@ export function Copyright(props) {
         {` ${new Date().getFullYear()}.`}
       </Typography>
       {!props.simple &&
-        <LogoCard {...props} />
+        <LogoCard {...props} width={150} />
       }
     </Box>
   );
