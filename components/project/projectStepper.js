@@ -6,12 +6,16 @@ import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 import {useSession} from "next-auth/react";
+import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import {styled} from "@mui/material/styles";
+
 
 const steps = [
     'Inicio',
-    'Propuesta creada',
-    'Propuesta enviada',
-    'Proyecto aceptado',
+    'Creado',
+    'En Revisión',
+    'Aceptado',
+    'En progreso',
     'Revisión final',
     'Pendiente doc. final',
     'Entregado',
@@ -79,8 +83,30 @@ const getNextActionDisabled = (session, projectStatus) => {
             return true;
         }
     }
-}
+};
 
+const QontoConnector = styled(StepConnector)(({ theme }) => ({
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
+        top: 10,
+        left: 'calc(-50% + 16px)',
+        right: 'calc(50% + 16px)',
+    },
+    [`&.${stepConnectorClasses.active}`]: {
+        [`& .${stepConnectorClasses.line}`]: {
+            borderColor: '#4b64d0',
+        },
+    },
+    [`&.${stepConnectorClasses.completed}`]: {
+        [`& .${stepConnectorClasses.line}`]: {
+            borderColor: '#0a2fce',
+        },
+    },
+    [`& .${stepConnectorClasses.line}`]: {
+        borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+        borderTopWidth: 3,
+        borderRadius: 1,
+    },
+}));
 
 export default function ProjectStepper({project}) {
 
@@ -101,7 +127,7 @@ export default function ProjectStepper({project}) {
     console.log(activeStep);
     return (
         <Box sx={{ width: '100%' }} >
-            <Stepper activeStep={activeStep} alternativeLabel >
+            <Stepper activeStep={activeStep} alternativeLabel connector={<QontoConnector />} >
                 {steps.map((label, index) => {
                     const labelProps = {};
                     // if (isStepFailed(index)) {

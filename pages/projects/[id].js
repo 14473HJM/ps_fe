@@ -50,21 +50,6 @@ function a11yProps(index) {
     };
 }
 
-const infSegDisable = {
-    infoDisable: true,
-    segDisable: true,
-    convDisable: true,
-    attDisable: true,
-    presDisable: true,
-    evalDisable: true,
-    infoTabDisable: true,
-    segTabDisable: true,
-    convTabDisable: true,
-    attTabDisable: true,
-    presTabDisable: true,
-    evalTabDisable: true,
-};
-
 const handleDisabled = (session, project) => {
     if (session && session.user.roles.includes("ADMIN")) {
         return (
@@ -81,6 +66,24 @@ const handleDisabled = (session, project) => {
                 attTabDisable: false,
                 presTabDisable: false,
                 evalTabDisable: false,
+            }
+        );
+    }
+    if (!project.projectStatus) {
+        return (
+            {
+                infoDisable: false,
+                segDisable: true,
+                convDisable: true,
+                attDisable: true,
+                presDisable: true,
+                evalDisable: true,
+                infoTabDisable: false,
+                segTabDisable: true,
+                convTabDisable: true,
+                attTabDisable: true,
+                presTabDisable: true,
+                evalTabDisable: true,
             }
         );
     }
@@ -188,7 +191,7 @@ const handleDisabled = (session, project) => {
                         presDisable: true,
                         evalDisable: true,
                         infoTabDisable: false,
-                        segTabDisable: true,
+                        segTabDisable: false,
                         convTabDisable: false,
                         attTabDisable: true,
                         presTabDisable: true,
@@ -443,10 +446,6 @@ export default function BasicTabs(props) {
     const [value, setValue] = React.useState(0);
     const [project, setProject] = React.useState(props._project);
     const [infSegDis, setInfSegDis] = React.useState(handleDisabled(session, project));
-
-    //const infSegDis = handleDisabled(session, project);
-
-    console.log(infSegDis);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
