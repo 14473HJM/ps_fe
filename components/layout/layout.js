@@ -19,6 +19,9 @@ import {Sidebar} from "./sidebar";
 import { StickyFooter } from "../brand/stickyFooter";
 import CardMedia from "@mui/material/CardMedia";
 import { useSession, signOut } from "next-auth/react";
+import Image from 'next/image'
+import psuLogoWhite from '../../public/psa_b.png'
+import psuLogoBlack from '../../public/psa_n.png'
 
 const mdTheme = createTheme();
 
@@ -34,70 +37,77 @@ export default function Layout({ children }) {
         <ThemeProvider theme={mdTheme}>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-            <AppBar position="absolute" open={open}>
-                <Toolbar
-                    sx={{
-                        pr: '24px', // keep right padding when drawer closed
-                    }}
-                >
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={toggleDrawer}
+                <AppBar position="absolute" open={open}>
+                    <Toolbar
                         sx={{
-                            marginRight: '36px',
-                            ...(open && { display: 'none' }),
+                            pr: '24px', // keep right padding when drawer closed
                         }}
                     >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography
-                        component="h1"
-                        variant="h6"
-                        color="inherit"
-                        noWrap
-                        sx={{ flexGrow: 1 }}
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={toggleDrawer}
+                            sx={{
+                                marginRight: '36px',
+                                ...(open && { display: 'none' }),
+                            }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Box sx={{
+                            display: 'flex',
+                            flexGrow: 1,
+                            justifyContent: open ? 'flex-end' : 'space-between',
+                            alignItems: 'center',
+                            py: 1,
+                            ...(open && { height: 77 }),
+                        }}>
+                            {!open && <Image
+                                src={psuLogoWhite}
+                                alt="Práctica supervisada admin"
+                                width={150}
+                            />}
+                            <Box>
+                            <IconButton color="inherit" sx={{mr: 3}}>
+                                <Badge badgeContent={4} color="secondary">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </IconButton>
+                                <IconButton color="inherit" onClick={signOut}>
+                                <LogoutIcon />
+                            </IconButton>
+                            </Box>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+                <Sidebar variant="permanent" open={open}>
+                    <Toolbar
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                            px: [1],
+                            pt: [1]
+                        }}
                     >
-                        <CardMedia sx={{width: 200}}
-                            component="img"
-                            width="25px"
-                            image='/psa_b.png'
-                            alt="Tecnicatura Universitaria en Programacion"
-                        />
-                    </Typography>
-                    <IconButton color="inherit" sx={{mr: 3}}>
-                        <Badge badgeContent={4} color="secondary">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
-                        <IconButton color="inherit" onClick={signOut}>
-                        <LogoutIcon />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-            <Sidebar variant="permanent" open={open}>
-                <Toolbar
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'flex-end',
-                        px: [1],
-                        pt: [2]
-                    }}
-                >
-                    <IconButton onClick={toggleDrawer}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </Toolbar>
-                <Divider sx={{pt:2}}/>
-                <List component="nav">
-                    {(session && session.user.roles.includes("ADMIN")) ? mainAdminListItems :
-                        (session && session.user.roles.includes("PROFESSOR")) ? mainProfessorListItems : mainStudentListItems}
-                    <Divider sx={{ my: 1 }} />
-                    {secondaryListItems}
-                </List>
-            </Sidebar>
+                        {open && <Image
+                            src={psuLogoBlack}
+                            alt="Práctica supervisada admin"
+                            width={150}
+                        />}
+                        <IconButton onClick={toggleDrawer}>
+                            <ChevronLeftIcon />
+                        </IconButton>
+                    </Toolbar>
+                    <Divider sx={{pt:1}}/>
+                    <List component="nav">
+                        {(session && session.user.roles.includes("ADMIN")) ? mainAdminListItems :
+                            (session && session.user.roles.includes("PROFESSOR")) ? mainProfessorListItems : mainStudentListItems}
+                        <Divider sx={{ my: 1 }} />
+                        {secondaryListItems}
+                    </List>
+                </Sidebar>
                 <Box
                     component="main"
                     sx={{
@@ -108,13 +118,15 @@ export default function Layout({ children }) {
                         flexGrow: 1,
                         height: '100vh',
                         overflow: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
                     }}
                 >
-                    <Toolbar />
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4, pt:10 }}>
                         {children}
-                        <StickyFooter color="black" />
                     </Container>
+                    <StickyFooter color="black" />
                 </Box>
             </Box>
         </ThemeProvider>

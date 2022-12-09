@@ -23,21 +23,18 @@ export function StickyFooter({ color = 'white' }) {
       sx={{
           display: 'flex',
           flexDirection: 'column',
-          mt: '16px',
       }}
     >
       <CssBaseline />
       <Box
         component="footer"
         sx={{
-          py: 3,
           px: 2,
-          mt: 'auto',
           backgroundColor: (theme) => theme.palette.grey[colors.background],
         }}
       >
-        <Container maxWidth="sm">
-          <Copyright sx={{ pt: 2}} color={colors.text} />
+        <Container>
+          <Copyright color={colors.text} />
         </Container>
       </Box>
     </Box>
