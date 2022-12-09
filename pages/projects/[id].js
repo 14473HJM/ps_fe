@@ -50,181 +50,407 @@ function a11yProps(index) {
     };
 }
 
+const infSegDisable = {
+    infoDisable: true,
+    segDisable: true,
+    convDisable: true,
+    attDisable: true,
+    presDisable: true,
+    evalDisable: true,
+    infoTabDisable: true,
+    segTabDisable: true,
+    convTabDisable: true,
+    attTabDisable: true,
+    presTabDisable: true,
+    evalTabDisable: true,
+};
+
+const handleDisabled = (session, project) => {
+    if (session && session.user.roles.includes("ADMIN")) {
+        return (
+            {
+                infoDisable: false,
+                segDisable: false,
+                convDisable: false,
+                attDisable: false,
+                presDisable: false,
+                evalDisable: false,
+                infoTabDisable: false,
+                segTabDisable: false,
+                convTabDisable: false,
+                attTabDisable: false,
+                presTabDisable: false,
+                evalTabDisable: false,
+            }
+        );
+    }
+    switch (project.projectStatus) {
+        case "CREATED":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: true,
+                        convTabDisable: false,
+                        attTabDisable: true,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: false,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: true,
+                        convTabDisable: false,
+                        attTabDisable: true,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+        case "UNDER_PROP_REVIEW":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: true,
+                        convTabDisable: false,
+                        attTabDisable: true,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: true,
+                        convTabDisable: false,
+                        attTabDisable: true,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+        case "PROP_ACCEPTED":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: true,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: false,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: true,
+                        convTabDisable: false,
+                        attTabDisable: true,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+        case "WIP":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: true,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: false,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+        case "UNDER_FINAL_REVIEW":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: true,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+        case "READY_TO_DELIVER":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: false,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+        case "DELIVERED":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: false,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: false,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: true,
+                    }
+                );
+            }
+        case "FINISHED":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: false,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: false,
+                    }
+                );
+            }
+        case "CANCELED":
+            if(session && project.tutor && project.tutor.id == session.user.person.id) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: false,
+                    }
+                );
+            }
+            if(session && project.students.some(s => s.id == session.user.person.id)) {
+                return (
+                    {
+                        infoDisable: true,
+                        segDisable: true,
+                        convDisable: false,
+                        attDisable: true,
+                        presDisable: true,
+                        evalDisable: true,
+                        infoTabDisable: false,
+                        segTabDisable: false,
+                        convTabDisable: false,
+                        attTabDisable: false,
+                        presTabDisable: false,
+                        evalTabDisable: false,
+                    }
+                );
+            }
+        default:
+            return(
+                {
+                    infoDisable: true,
+                    segDisable: true,
+                    convDisable: true,
+                    attDisable: true,
+                    presDisable: true,
+                    evalDisable: true,
+                    infoTabDisable: true,
+                    segTabDisable: true,
+                    convTabDisable: true,
+                    attTabDisable: true,
+                    presTabDisable: true,
+                    evalTabDisable: true,
+                }
+            );
+        }
+};
+
 export default function BasicTabs(props) {
+    const {data: session, status} = useSession()
     const [value, setValue] = React.useState(0);
     const [project, setProject] = React.useState(props._project);
+    const [infSegDis, setInfSegDis] = React.useState(handleDisabled(session, project));
+
+    //const infSegDis = handleDisabled(session, project);
+
+    console.log(infSegDis);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-
-    let infoDisable = false;
-    let segDisable = false;
-    let convDisable = false;
-    let attDisable = false;
-    let presDisable = false;
-    let evalDisable = false;
-    let infoTabDisable = false;
-    let segTabDisable = false;
-    let convTabDisable = false;
-    let attTabDisable = false;
-    let presTabDisable = false;
-    let evalTabDisable = false;
-
-    const handleDisabled = (project) => {
-        if(!project.projectStatus) {
-            infoDisable = false;
-            segDisable = true;
-            convDisable = true;
-            attDisable = true;
-            presDisable = true;
-            evalDisable = true;
-        } else {
-            switch (project.projectStatus) {
-                case "CREATED":
-                    infoDisable = false;
-                    segDisable = true;
-                    convDisable = false;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = true;
-                    convTabDisable = false;
-                    attTabDisable = true;
-                    presTabDisable = true;
-                    evalTabDisable = true;
-                    break;
-                case "UNDER_PROP_REVIEW":
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = false;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = true;
-                    convTabDisable = false;
-                    attTabDisable = true;
-                    presTabDisable = true;
-                    evalTabDisable = true;
-                    break;
-                case "PROP_ACCEPTED":
-                    infoDisable = true;
-                    segDisable = false;
-                    convDisable = false;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = false;
-                    convTabDisable = false;
-                    attTabDisable = true;
-                    presTabDisable = true;
-                    evalTabDisable = true;
-                    break;
-                case "WIP":
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = false;
-                    attDisable = false;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = false;
-                    convTabDisable = false;
-                    attTabDisable = false;
-                    presTabDisable = true;
-                    evalTabDisable = true;
-                    break;
-                case "UNDER_FINAL_REVIEW":
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = false;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = false;
-                    convTabDisable = false;
-                    attTabDisable = false;
-                    presTabDisable = true;
-                    evalTabDisable = true;
-                    break;
-                case "READY_TO_DELIVER":
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = false;
-                    attDisable = false;
-                    presDisable = false;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = false;
-                    convTabDisable = false;
-                    attTabDisable = false;
-                    presTabDisable = false;
-                    evalTabDisable = true;
-                    break;
-                case "DELIVERED":
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = true;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = false;
-                    infoTabDisable = false;
-                    segTabDisable = false;
-                    convTabDisable = false;
-                    attTabDisable = false;
-                    presTabDisable = false;
-                    evalTabDisable = false;
-                    break;
-                case "FINISHED":
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = true;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = false;
-                    convTabDisable = false;
-                    attTabDisable = false;
-                    presTabDisable = false;
-                    evalTabDisable = false;
-                    break;
-                case "CANCELED":
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = true;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = false;
-                    segTabDisable = false;
-                    convTabDisable = false;
-                    attTabDisable = false;
-                    presTabDisable = false;
-                    evalTabDisable = false;
-                    break;
-                default:
-                    infoDisable = true;
-                    segDisable = true;
-                    convDisable = true;
-                    attDisable = true;
-                    presDisable = true;
-                    evalDisable = true;
-                    infoTabDisable = true;
-                    segTabDisable = true;
-                    convTabDisable = true;
-                    attTabDisable = true;
-                    presTabDisable = true;
-                    evalTabDisable = true;
-                    break;
-            }
-        }
-    };
-
-    handleDisabled(project);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -233,31 +459,31 @@ export default function BasicTabs(props) {
             </Box>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                    <Tab label="Información del Proyecto" {...a11yProps(0)} disabled={infoTabDisable}/>
-                    <Tab label="Seguimiento" {...a11yProps(1)} disabled={segTabDisable}/>
-                    <Tab label="Conversaciones" {...a11yProps(2)} disabled={convTabDisable}/>
-                    <Tab label="Adjuntos" {...a11yProps(3)} disabled={attTabDisable}/>
-                    <Tab label="Presentación final" {...a11yProps(4)} disabled={presTabDisable}/>
-                    <Tab label="Evaluaciones" {...a11yProps(5)} disabled={evalTabDisable}/>
+                    <Tab label="Información del Proyecto" {...a11yProps(0)} disabled={infSegDis.infoTabDisable}/>
+                    <Tab label="Seguimiento" {...a11yProps(1)} disabled={infSegDis.segTabDisable}/>
+                    <Tab label="Conversaciones" {...a11yProps(2)} disabled={infSegDis.convTabDisable}/>
+                    <Tab label="Adjuntos" {...a11yProps(3)} disabled={infSegDis.attTabDisable}/>
+                    <Tab label="Presentación final" {...a11yProps(4)} disabled={infSegDis.presTabDisable}/>
+                    <Tab label="Evaluaciones" {...a11yProps(5)} disabled={infSegDis.evalTabDisable}/>
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <ProjectInformation project={project} setProject={setProject} isDisabled={infoDisable}/>
+                <ProjectInformation project={project} setProject={setProject} isDisabled={infSegDis.infoDisable}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <ProjectMonitoring project={project} setProject={setProject} isDisabled={segDisable}/>
+                <ProjectMonitoring project={project} setProject={setProject} isDisabled={infSegDis.segDisable}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <ProjectConversation project={project} setProject={setProject} isDisabled={convDisable}/>
+                <ProjectConversation project={project} setProject={setProject} isDisabled={infSegDis.convDisable}/>
             </TabPanel>
             <TabPanel value={value} index={3}>
-                <ProjectAttachments project={project} setProject={setProject} isDisabled={attDisable}/>
+                <ProjectAttachments project={project} setProject={setProject} isDisabled={infSegDis.attDisable}/>
             </TabPanel>
             <TabPanel value={value} index={4}>
-                <ProjectPresentation project={project} setProject={setProject} isDisabled={presDisable}/>
+                <ProjectPresentation project={project} setProject={setProject} isDisabled={infSegDis.presDisable}/>
             </TabPanel>
             <TabPanel value={value} index={5}>
-                <ProjectValuation project={project} setProject={setProject} isDisabled={evalDisable}/>
+                <ProjectValuation project={project} setProject={setProject} isDisabled={infSegDis.evalDisable}/>
             </TabPanel>
         </Box>
     );

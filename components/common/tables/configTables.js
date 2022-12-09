@@ -38,7 +38,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
     const [rowDeleteIndex, setRowDeleteIndex] = React.useState(0);
     const [openDialog, setOpenDialog] = React.useState(false);
-    const {data: session, status} = useSession()
+    const {data: session, status} = useSession();
     const [modalOpen, setModalOpen] = React.useState(false);
     const [modalRow, setModalRow] = React.useState(null);
     const [modalSaveDisabled, setModalSaveDisabled] = React.useState(true);
@@ -46,7 +46,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
     const [openSnackbarError, setOpenSnackbarError] = React.useState(false);
     const [seeDeleted, setSeeDeleted] = React.useState(false);
     const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
+    const [dense, setDense] = React.useState(true);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
@@ -408,6 +408,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                             fullWidth
                             autoComplete="value"
                             variant="standard"
+                            inputProps={{maxlength: column.maxlength}}
                             value={modalRow ? modalRow[column.name] : null}
                         />
                     </Grid>

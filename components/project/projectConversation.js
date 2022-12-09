@@ -16,16 +16,20 @@ import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import {useSession} from "next-auth/react";
 import axios from "axios";
+import {postProjectComment} from "../../pages/api/projects/projectsApi";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function ProjectConversation(props) {
 
     console.log(props);
     const[ conversation, setConversation ]  = React.useState(props.project.conversation);
-    // const[project, setProject]  = React.useState({
-    //     conversation: {
-    //         comments: [],
-    //     },
-    // });
+    const [openSnackbarOK, setOpenSnackbarOK] = React.useState(false);
+    const [openSnackbarError, setOpenSnackbarError] = React.useState(false);
 
     const project = props.project;
 
@@ -33,7 +37,26 @@ export default function ProjectConversation(props) {
 
     const user = session.user;
 
-    console.log(user);
+    const handleOpenSnackbar = (t) => {
+        if(t === "E") {
+            setOpenSnackbarError(true);
+        } else if (t === "S") {
+            setOpenSnackbarOK(true);
+        }
+    };
+    const handleCloseSnackbar = (event, reason, t) => {
+        if(t === "E") {
+            if (reason === 'clickaway') {
+                return;
+            }
+            setOpenSnackbarError(false);
+        } else if (t === "S") {
+            if (reason === 'clickaway') {
+                return;
+            }
+            setOpenSnackbarOK(false);
+        }
+    };
 
     const handleSendMessage = async (event) => {
         event.preventDefault();
@@ -42,27 +65,23 @@ export default function ProjectConversation(props) {
             comment: event.target.message.value,
             createdDate: new Date(),
         };
-        const _comment = await postCommentProject(comment, project, user.access_token)
-        if(_comment) {
-            const comments = project.conversation.comments;
-            comments.push(_comment)
-            setConversation({
-                ...conversation,
-                comments,
-            });
-
-            // conversation.comments.push(_comment)
-            // setConversation(conversation);
-            event.target.message.value = null;
-            console.log(conversation);
+        const response = await postProjectComment(session, project, comment)
+        if (response && response.ok) {
+            const _comment = await response.json();
+            if (_comment) {
+                const comments = project.conversation.comments;
+                comments.push(_comment)
+                setConversation({
+                    ...conversation,
+                    comments,
+                });
+                event.target.message.value = null;
+                console.log(conversation);
+            }
+            handleOpenSnackbar("S")
+        } else {
+            handleOpenSnackbar("E")
         }
-        document.getElementById("conversation")
-        // const comments = project.conversation.comments;
-        // comments.push(comment)
-        // setProject({
-        //     ...project,
-        //     comments,
-        // });
     };
 
     return(
@@ -92,17 +111,29 @@ export default function ProjectConversation(props) {
                     </Grid>
                 </Grid>
                 <Paper style={{ padding: "40px 20px", marginTop:20}} elevation={3} id="conversation">
-                    {
-                        (conversation != null && conversation.comments.length > 0) ?
-                            (conversation.comments.map(
-                                (comment) => getCommentCard( comment)
-                            )) :
-                            (<></>)
-                    }
-                    {/* project.conversation.comments.map(comment => <CommentCard {...comment} />) */}
+                    {project.conversation.comments.map(comment => <CommentCard {...comment} />)}
                 </Paper>
             </Box>
-
+            <Snackbar
+                open={openSnackbarOK}
+                autoHideDuration={6000}
+                onClose={(e, r) => handleCloseSnackbar(e, r, 'S')}
+                anchorOrigin={{vertical: 'botton', horizontal: 'center'}}
+            >
+                <Alert onClose={(e, r) => handleCloseSnackbar(e, r, 'S')} severity="success" sx={{ width: '100%' }}>
+                    Mensaje enviado con exito!
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={openSnackbarError}
+                autoHideDuration={6000}
+                onClose={(e, r) => handleCloseSnackbar(e, r, 'E')}
+                anchorOrigin={{vertical: 'botton', horizontal: 'center'}}
+            >
+                <Alert onClose={(e, r) => handleCloseSnackbar(e, r, 'E')} severity="error" sx={{ width: '100%' }}>
+                    Hubo un error al enviar el mensaje!!!
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 
@@ -129,26 +160,4 @@ const CommentCard = ({ commentator, comment, createdDate }) => {
         <Divider variant="fullWidth" style={{ margin: "30px 0" }} />
         </React.Fragment>
     );
-}
-
-async function postCommentProject(comment, project, access_token) {
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(comment),
-            headers: {
-                'accept': '*/*',
-                'charset': 'UTF-8',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + access_token,
-            }
-        };
-        const res = await fetch('http://localhost:8080/ps/projects/' + project.id + "/conversation/comments", options);
-        console.log(res);
-        if(res.ok) {
-            const _comment = await res.json();
-            console.log(_comment);
-            return _comment;
-        } else {
-            return null;
-        }
 }

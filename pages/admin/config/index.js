@@ -14,6 +14,13 @@ import {
     postCodeFramework,
     putCodeFramework
 } from "../../api/config/codeFrameworksApi";
+import {
+    deleteCodeLanguage,
+    getCodeLanguage,
+    getCodeLanguages,
+    postCodeLanguage,
+    putCodeLanguage
+} from "../../api/config/codeLanguagesApi";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -70,7 +77,8 @@ export default function Config(props) {
             visible: false,
             disabled: true,
             name: "id",
-            label: "ID"
+            label: "ID",
+            maxlength: 15,
         },
         {
             id: "name",
@@ -78,7 +86,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "name",
-            label: "Nombre"
+            label: "Nombre",
+            maxlength: 249,
         },
         {
             id: "imageLink",
@@ -86,7 +95,8 @@ export default function Config(props) {
             visible: false,
             disabled: false,
             name: "imageLink",
-            label: "Link a imagen"
+            label: "Link a imagen",
+            maxlength: 249,
         },
         {
             id: "type",
@@ -94,7 +104,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "type",
-            label: "Tipo"
+            label: "Tipo",
+            maxlength: 249,
         },
         {
             id: "description",
@@ -102,7 +113,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "description",
-            label: "Descripción"
+            label: "Descripción",
+            maxlength: 249,
         },
     ]
 
@@ -113,7 +125,8 @@ export default function Config(props) {
             visible: true,
             disabled: true,
             name: "id",
-            label: "ID"
+            label: "ID",
+            maxlength: 15,
         },
         {
             id: "name",
@@ -121,7 +134,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "name",
-            label: "Nombre"
+            label: "Nombre",
+            maxlength: 249,
         },
         {
             id: "type",
@@ -129,7 +143,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "type",
-            label: "Tipo"
+            label: "Tipo",
+            maxlength: 249,
         },
     ]
 
@@ -140,7 +155,8 @@ export default function Config(props) {
             visible: true,
             disabled: true,
             name: "id",
-            label: "ID"
+            label: "ID",
+            maxlength: 15,
         },
         {
             id: "name",
@@ -148,7 +164,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "name",
-            label: "Nombre"
+            label: "Nombre",
+            maxlength: 249,
         },
         {
             id: "type",
@@ -156,7 +173,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "type",
-            label: "Tipo"
+            label: "Tipo",
+            maxlength: 249,
         }
     ]
 
@@ -167,7 +185,8 @@ export default function Config(props) {
             visible: true,
             disabled: true,
             name: "id",
-            label: "ID"
+            label: "ID",
+            maxlength: 15,
         },
         {
             id: "name",
@@ -175,7 +194,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "name",
-            label: "Nombre"
+            label: "Nombre",
+            maxlength: 249,
         },
         {
             id: "type",
@@ -183,7 +203,8 @@ export default function Config(props) {
             visible: true,
             disabled: false,
             name: "type",
-            label: "Tipo"
+            label: "Tipo",
+            maxlength: 249,
         }
     ]
 
@@ -198,19 +219,18 @@ export default function Config(props) {
                     value={value}
                     onChange={handleChange}
                     aria-label="Vertical tabs example"
-                    sx={{borderRight: 1, borderColor: 'divider'}}
+                    sx={{borderRight: 1, borderColor: 'divider', minWidth: '15%'}}
                 >
-                    <Tab label="Code Frameworks" {...a11yProps(0)} />
-                    <Tab label="Code Languages" {...a11yProps(1)} />
-                    <Tab label="Platform" {...a11yProps(2)} />
-                    <Tab label="Technology" {...a11yProps(3)} />
-                    <Tab label="User Interface" {...a11yProps(4)} />
-                    <Tab label="Cohort" {...a11yProps(5)} />
-                    <Tab label="Test" {...a11yProps(6)} />
+                    <Tab label="Framewors de código" {...a11yProps(0)} />
+                    <Tab label="Lenguajes de código" {...a11yProps(1)} />
+                    <Tab label="Plataformas de trabajo" {...a11yProps(2)} />
+                    <Tab label="Tecnologías" {...a11yProps(3)} />
+                    <Tab label="Interfaces de usuario" {...a11yProps(4)} />
+                    <Tab label="Cohortes" {...a11yProps(5)} />
                 </Tabs>
                 <TabPanel value={value} index={0}>
                     <ConfigTable
-                        title={"Code Framewors"}
+                        title={"Framewors de código"}
                         description={"Description"}
                         rows={codeFrameworks}
                         setRows={setCodeFrameworks}
@@ -224,19 +244,21 @@ export default function Config(props) {
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <ConfigTable
-                        title={"Code Languages"}
+                        title={"Lenguajes de código"}
                         description={"Description"}
                         rows={codeLanguages}
                         setRows={setCodeLanguages}
                         columns={codeLanguagesColumns}
-                        putApi={putCodeFramework}
-                        postApi={postCodeFramework}
-                        deleteApi={deleteCodeFramework}
+                        putApi={putCodeLanguage}
+                        postApi={postCodeLanguage}
+                        deleteApi={deleteCodeLanguage}
+                        getAll={getCodeLanguages}
+                        getOne={getCodeLanguage}
                     />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     <ConfigTable
-                        title={"Platforms"}
+                        title={"Plataformas de trabajo"}
                         description={"Description"}
                         rows={platforms}
                         setRows={setPlatforms}
@@ -248,7 +270,7 @@ export default function Config(props) {
                 </TabPanel>
                 <TabPanel value={value} index={3} sx={{width: 1}}>
                     <ConfigTable
-                        title={"Technologies"}
+                        title={"Tecnologías"}
                         description={"Description"}
                         rows={technologies}
                         setRows={setTechnologies}
@@ -263,17 +285,6 @@ export default function Config(props) {
                 </TabPanel>
                 <TabPanel value={value} index={5}>
                     Item Six
-                </TabPanel>
-                <TabPanel value={value} index={6}>
-                    <ConfigTable
-                        title={"Code Framewors"}
-                        description={"Description"}
-                        rows={codeFrameworks}
-                        columns={codeFrameworksColumns}
-                        putApi={putCodeFramework}
-                        postApi={postCodeFramework}
-                        deleteApi={deleteCodeFramework}
-                    />
                 </TabPanel>
             </Box>
         );

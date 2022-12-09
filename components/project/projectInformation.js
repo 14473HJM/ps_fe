@@ -12,7 +12,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 export default function ProjectInformation(props) {
 
     const [project, setProject]  = React.useState(props.project);
-    const isDisabled = props.isDisabled;
+    const [isDisabled, setIsDisabled] = React.useState(props.isDisabled);
     console.log(props);
 
     return(
