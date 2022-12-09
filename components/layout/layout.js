@@ -123,7 +123,7 @@ export default function Layout({ children }) {
                         justifyContent: 'space-between',
                     }}
                 >
-                    <Container maxWidth="lg" sx={{ mt: 4, mb: 4, pt:10 }}>
+                    <Container maxWidth="xl" sx={{ mt: 4, mb: 4, pt:10 }}>
                         {children}
                     </Container>
                     <StickyFooter color="black" />
