@@ -40,9 +40,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function Invitations(props) {
 
-    const [rowDeleteIndex, setRowDeleteIndex] = React.useState(0);
-    const [rowEditableIndex, setRowEditableIndex] = React.useState(0);
-    const [rowResendIndex, setRowResendIndex] = React.useState(0);
     const [rowEditable, setRowEditable] = React.useState(0);
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
     const [rowOnResend, setRowOnResend] = React.useState(0);
@@ -60,22 +57,16 @@ export default function Invitations(props) {
 
     const handleEdit = (event, row, index) => {
         event.preventDefault();
-        setRowEditableIndex(index);
         setRowEditable(row);
         handleClickOpenEditDialog();
     }
     const handleDelete = (event, row, index) => {
         event.preventDefault();
-        setRowDeleteIndex(index);
         setRowOnDelete(row);
-        console.log(index);
-        console.log(row);
-        console.log(row.index);
         handleClickOpenDialog();
     }
     const handleResend = (event, row, index) => {
         event.preventDefault();
-        setRowResendIndex(index);
         setRowOnResend(row);
         handleClickOpenResendDialog();
     }
@@ -85,7 +76,8 @@ export default function Invitations(props) {
         const response = await cancelInvitation(session, rowOnDelete.id);
         if (response && response.ok) {
             const row = await response.json();
-            invitations[rowDeleteIndex] = row;
+            const index = getRowIndex(rowOnDelete);
+            invitations[index] = row;
             SetInvitations(invitations);
             handleOpenSnackbar("S")
         } else {
@@ -98,7 +90,8 @@ export default function Invitations(props) {
         const response = await resendInvitation(session, rowOnResend.id);
         if (response && response.ok) {
             const row = await response.json();
-            invitations[rowResendIndex] = row;
+            const index = getRowIndex(rowOnResend);
+            invitations[index] = row;
             SetInvitations(invitations);
             handleOpenSnackbar("S")
         } else {
@@ -111,7 +104,8 @@ export default function Invitations(props) {
         const response = await putInvitation(session, rowEditable);
         if (response && response.ok) {
             const row = await response.json();
-            invitations[rowEditableIndex] = row;
+            const index = getRowIndex(rowEditable);
+            invitations[index] = row;
             SetInvitations(invitations);
             handleOpenSnackbar("S")
         } else {
@@ -234,6 +228,11 @@ export default function Invitations(props) {
         }
     };
 
+    const getRowIndex = (row) => {
+        //return invitations.find(r => r.id == row.id).index;
+        return invitations.indexOf(row);
+    }
+
     return (
         <React.Fragment>
             <Box sx={{display: 'flex', mr: 10, mb:3}}>
@@ -289,13 +288,13 @@ export default function Invitations(props) {
                                     {row.invitationStatus == 'ACTIVE' ?
                                         <React.Fragment>
                                             <Fab color="primary" aria-label="edit" size="small" >
-                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, invitations[index], index)}/>
+                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, row)}/>
                                             </Fab>
                                             <Fab color="error" aria-label="edit" size="small">
-                                                <CancelIcon fontSize={"small"} onClick={(e) => handleDelete(e, invitations[index], index)}/>
+                                                <CancelIcon fontSize={"small"} onClick={(e) => handleDelete(e, row)}/>
                                             </Fab>
                                             <Fab color="info" aria-label="edit" size="small">
-                                                <SendIcon fontSize={"small"} onClick={(e) => handleResend(e, invitations[index], index)}/>
+                                                <SendIcon fontSize={"small"} onClick={(e) => handleResend(e, row)}/>
                                             </Fab>
                                         </React.Fragment>
                                      : null
