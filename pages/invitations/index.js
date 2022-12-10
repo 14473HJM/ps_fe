@@ -27,55 +27,127 @@ import SendIcon from '@mui/icons-material/Send';
 import Divider from "@mui/material/Divider";
 import TextField from '@mui/material/TextField';
 import usePost from '../../hooks/usePost';
+import {cancelInvitation, putInvitation, resendInvitation} from "../api/invitation/invitationsApi";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function Invitations(props) {
+
+    const [rowDeleteIndex, setRowDeleteIndex] = React.useState(0);
+    const [rowEditableIndex, setRowEditableIndex] = React.useState(0);
+    const [rowResendIndex, setRowResendIndex] = React.useState(0);
     const [rowEditable, setRowEditable] = React.useState(0);
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
+    const [rowOnResend, setRowOnResend] = React.useState(0);
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [openResendDialog, setOpenResendDialog] = React.useState(false);
+    const [openEditDialog, setOpenEditDialog] = React.useState(false);
     const [openInvitationDialog, setOpenInvitationDialog] = React.useState(false);
     const { data: session, status } = useSession();
     const [invitations, SetInvitations] = React.useState(props.invitations);
     const [invitationData, setInvitationData] = React.useState(null);
     const { data, error, loading } = usePost('/api/invitation', invitationData);
+    const [openSnackbarOK, setOpenSnackbarOK] = React.useState(false);
+    const [openSnackbarError, setOpenSnackbarError] = React.useState(false);
 
-    const handleEdit = (event, id) => {
+    const handleEdit = (event, row, index) => {
         event.preventDefault();
-        setRowEditable(id);
+        setRowEditableIndex(index);
+        setRowEditable(row);
+        handleClickOpenEditDialog();
     }
-
-    const handleDelete = (event, id) => {
+    const handleDelete = (event, row, index) => {
         event.preventDefault();
-        setRowOnDelete(id);
+        setRowDeleteIndex(index);
+        setRowOnDelete(row);
         handleClickOpenDialog();
     }
-
-    const handleConfirmationDelete = () => {
-
-    }
-
-    const handleSave = async (event, id, codeFramework) => {
+    const handleResend = (event, row, index) => {
         event.preventDefault();
-        // console.log(codeFramework);
-        setRowEditable(0);
-        refreshContent();
+        setRowResendIndex(index);
+        setRowOnResend(row);
+        handleClickOpenResendDialog();
     }
 
-    const handleEditable = (id) => {
-        if(id === rowEditable) {
-            return true;
+    const handleConfirmationDelete = async (event) => {
+        event.preventDefault();
+        const response = await cancelInvitation(session, rowOnDelete.id);
+        if (response && response.ok) {
+            const row = await response.json();
+            invitations[rowDeleteIndex] = row;
+            SetInvitations(invitations);
+            handleOpenSnackbar("S")
         } else {
-            return false;
+            handleOpenSnackbar("E")
         }
+        handleCloseDialog(event);
     }
+    const handleConfirmationResend  = async (event) => {
+        event.preventDefault();
+        const response = await resendInvitation(session, rowOnResend.id);
+        if (response && response.ok) {
+            const row = await response.json();
+            invitations[rowResendIndex] = row;
+            SetInvitations(invitations);
+            handleOpenSnackbar("S")
+        } else {
+            handleOpenSnackbar("E")
+        }
+        handleCloseResendDialog(event);
+    }
+    const handleConfirmationEdit  = async (event) => {
+        event.preventDefault();
+        const response = await putInvitation(session, rowEditable);
+        if (response && response.ok) {
+            const row = await response.json();
+            invitations[rowEditableIndex] = row;
+            SetInvitations(invitations);
+            handleOpenSnackbar("S")
+        } else {
+            handleOpenSnackbar("E")
+        }
+        handleCloseEditDialog(event);
+    }
+    const handleChangeRow = (event) => {
+        event.preventDefault();
+        const value = event.target.value;
+        const field = event.target.name;
+        //modalRow[field] = value;
+        setRowEditable({...rowEditable, [field]:value});
+        console.log(rowEditable);
+    }
+
+    const handleOpenSnackbar = (t) => {
+        if(t === "E") {
+            setOpenSnackbarError(true);
+        } else if (t === "S") {
+            setOpenSnackbarOK(true);
+        }
+    };
+    const handleCloseSnackbar = (event, reason, t) => {
+        if(t === "E") {
+            if (reason === 'clickaway') {
+                return;
+            }
+            setOpenSnackbarError(false);
+        } else if (t === "S") {
+            if (reason === 'clickaway') {
+                return;
+            }
+            setOpenSnackbarOK(false);
+        }
+    };
 
     const handleOpenInvitationDialog = () => {
         setOpenInvitationDialog(true);
     };
-
     const handleCloseInvitationDialog = () => {
         setOpenInvitationDialog(false);
     };
-
     const handleSendInvitation = (e) => {
         e.preventDefault();
         const {
@@ -87,7 +159,6 @@ export default function Invitations(props) {
             email,
         });
     }
-
     React.useEffect(() => {
         setInvitationData(null);
         setOpenInvitationDialog(false);
@@ -102,18 +173,23 @@ export default function Invitations(props) {
     const handleClickOpenDialog = () => {
         setOpenDialog(true);
     };
-
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
 
-    const refreshContent = async () => {
-    }
+    const handleClickOpenResendDialog = () => {
+        setOpenResendDialog(true);
+    };
+    const handleCloseResendDialog = () => {
+        setOpenResendDialog(false);
+    };
 
-    const handleChangeRow = (id, event) => {
-        event.preventDefault();
-    }
-
+    const handleClickOpenEditDialog = () => {
+        setOpenEditDialog(true);
+    };
+    const handleCloseEditDialog = () => {
+        setOpenEditDialog(false);
+    };
     const handleIcons = (status) => {
         // console.log(status);
         if(status === 'ACTIVE') {
@@ -143,7 +219,7 @@ export default function Invitations(props) {
                 <Typography component="h1" variant="h5" color="primary" gutterBottom mr={10}>
                     Invitaciones
                 </Typography>
-                <Fab color="success" aria-label="add" size="medium" sx={{mt: 0,}}
+                <Fab color="success" aria-label="add" size="medium" sx={{mt: -1.5}}
                         onClick={handleOpenInvitationDialog}>
                     <AddIcon />
                 </Fab>
@@ -157,37 +233,36 @@ export default function Invitations(props) {
                         <TableCell>Email</TableCell>
                         <TableCell>Estado</TableCell>
                         <TableCell>Vencimiento</TableCell>
+                        <TableCell  align={'center'}>Cantidad de envios</TableCell>
                         <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {invitations.map((row) =>
-                        <TableRow key={row.id} selected={handleEditable(row.id)}>
+                    {invitations.map((row, index) =>
+                        <TableRow key={row.id}>
                             {/*<TableCell>{row.id}</TableCell>*/}
-                            <TableCell contentEditable={handleEditable(row.id)} onChange={(e) => handleChangeRow(row.legajo, e)}>{row.legajo}</TableCell>
-                            <TableCell contentEditable={handleEditable(row.id)}>{row.email}</TableCell>
+                            <TableCell>{row.legajo}</TableCell>
+                            <TableCell>{row.email}</TableCell>
                             <TableCell>
                                 {handleIcons(row.invitationStatus)}
                             </TableCell>
                             <TableCell>{row.dueDateTime}</TableCell>
+                            <TableCell align={'center'}>{row.numberOfDeliveries}</TableCell>
                             <TableCell width={250}>
-                                <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }}>
-                                    {handleEditable(row.id) ?
-                                        <Fab color="primary" aria-label="edit" size="small">
-                                            <SaveIcon fontSize={"small"} onClick={(e) => handleSave(e, row.id, row)}/>
-                                        </Fab>
-                                        :
+                                <Box sx={{ '& > :not(style)': { m: 0.5 }, display: 'inline' }}>
+                                    {row.invitationStatus == 'ACTIVE' ?
                                         <React.Fragment>
                                             <Fab color="primary" aria-label="edit" size="small" >
-                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, row.id)}/>
+                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, invitations[index], index)}/>
                                             </Fab>
                                             <Fab color="error" aria-label="edit" size="small">
-                                                <CancelIcon fontSize={"small"} onClick={(e) => handleDelete(e, row.id)}/>
+                                                <CancelIcon fontSize={"small"} onClick={(e) => handleDelete(e, invitations[index], index)}/>
                                             </Fab>
                                             <Fab color="info" aria-label="edit" size="small">
-                                                <SendIcon fontSize={"small"} onClick={(e) => handleDelete(e, row.id)}/>
+                                                <SendIcon fontSize={"small"} onClick={(e) => handleResend(e, invitations[index], index)}/>
                                             </Fab>
                                         </React.Fragment>
+                                     : null
                                     }
                                 </Box>
                             </TableCell>
@@ -199,20 +274,94 @@ export default function Invitations(props) {
                 open={openDialog}
                 onClose={handleCloseDialog}
                 aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {"¿Seguro que desea borrar esta configuración?"}
+                aria-describedby="alert-dialog-description">
+                <DialogTitle id="alert-dialog-title" align={'center'}>
+                    {"¿Seguro que quiere cancelar la invitación?"}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Esta acción hará que ya no este disponible esta opción para nuevos proyectos,
-                        pero seguirá apareciendo en los proyectos que ya la tengan en uso.
+                    <DialogContentText id="alert-dialog-description" variant={'h6'}>
+                        Legajo: {rowOnDelete.legajo}
+                        <br/>
+                        Email: {rowOnDelete.email}
+                        <br/>
+                    </DialogContentText>
+                    <DialogContentText id="alert-dialog-description" sx={{mt: 2, color: 'error.main'}}>
+                        Esta acción no tiene vuelta atras y hará que que la invitación ya no pueda usarse.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseDialog}>Cancelar</Button>
+                    <Button onClick={handleCloseDialog} color="error">Cancelar</Button>
                     <Button onClick={handleConfirmationDelete} autoFocus>
+                        Confirmar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
+                <DialogTitle>Editar invitación</DialogTitle>
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                >
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="legajo"
+                            label="Legajo"
+                            name="legajo"
+                            type="legajo"
+                            fullWidth
+                            variant="standard"
+                            onChange={handleChangeRow}
+                            value={rowEditable.legajo}
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="email"
+                            label="Dirección de email"
+                            name="email"
+                            type="email"
+                            fullWidth
+                            variant="standard"
+                            onChange={handleChangeRow}
+                            value={rowEditable.email}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseEditDialog}>Cancelar</Button>
+                        <Button onClick={handleConfirmationEdit} autoFocus>
+                            Confirmar
+                        </Button>
+                    </DialogActions>
+                </Box>
+            </Dialog>
+            <Dialog
+                open={openResendDialog}
+                onClose={handleCloseResendDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description">
+                <DialogTitle id="alert-dialog-title" align={'center'}>
+                    {"¿Seguro que quiere reenviar la invitación?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description" variant={'h6'}>
+                        Legajo: {rowOnResend.legajo}
+                        <br/>
+                        Email: {rowOnResend.email}
+                        <br/>
+                    </DialogContentText>
+                    <DialogContentText id="alert-dialog-description" sx={{mt: 2}}>
+                        Esta acción NO genera un invitación nueva, solo reenvia la invitación original si la misma aun esta activa.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseResendDialog} color="error">Cancelar</Button>
+                    <Button onClick={handleConfirmationResend} autoFocus>
                         Confirmar
                     </Button>
                 </DialogActions>
@@ -256,6 +405,26 @@ export default function Invitations(props) {
                 </DialogActions>
                 </Box> 
             </Dialog>
+            <Snackbar
+                open={openSnackbarOK}
+                autoHideDuration={6000}
+                onClose={(e, r) => handleCloseSnackbar(e, r, 'S')}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'bottom'}}
+            >
+                <Alert onClose={(e, r) => handleCloseSnackbar(e, r, 'S')} severity="success" sx={{ width: '100%' }}>
+                    Operación realizada con exito!
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={openSnackbarError}
+                autoHideDuration={6000}
+                onClose={(e, r) => handleCloseSnackbar(e, r, 'E')}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'bottom'}}
+            >
+                <Alert onClose={(e, r) => handleCloseSnackbar(e, r, 'E')} severity="error" sx={{ width: '100%' }}>
+                    Hubo un error al procesar la operación
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 }
@@ -265,7 +434,6 @@ Invitations.auth = true;
 export async function getServerSideProps(context) {
 
     const { req } = context;
-    // console.log(context);
     const token = await getToken({ req })
     if(token != null) {
         const {access_token} = token

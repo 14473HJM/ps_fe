@@ -17,6 +17,7 @@ import {getToken} from "next-auth/jwt";
 import Avatar from "@mui/material/Avatar";
 import LockResetIcon from '@mui/icons-material/LockReset';
 import Fab from "@mui/material/Fab";
+import Divider from "@mui/material/Divider";
 
 function Row(props) {
     const { row } = props;
@@ -38,6 +39,7 @@ function Row(props) {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell>
+                <TableCell><Avatar src={row.person.imageProfile} /></TableCell>
                 <TableCell component="th" scope="row">
                     {row.userName}
                 </TableCell>
@@ -55,13 +57,18 @@ function Row(props) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
                             <Typography variant="h6" gutterBottom component="div">
-                                {row.person.objectType}
+                                {row.person.name + ' ' + row.person.lastName}
                             </Typography>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell/>
-                                        <TableCell>Nombre</TableCell>
+                                        <TableCell>Tipo Usuario</TableCell>
+                                        {row.person.personalContacts ?
+                                        <TableCell>Contactos Personales</TableCell>
+                                            : null }
+                                        {row.person.universityContacts ?
+                                        <TableCell>Contactos Universitarios</TableCell>
+                                            : null }
                                         {row.person.personIdentification ?
                                             <TableCell>{row.person.personIdentification.identificationType}</TableCell>
                                             :
@@ -70,14 +77,40 @@ function Row(props) {
                                             <TableCell>{row.person.universityIdentification.identificationType}</TableCell>
                                             :
                                             null }
+                                        <TableCell>Ciudad</TableCell>
                                         <TableCell>Estado</TableCell>
                                         <TableCell>Fecha de Nacimiento</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     <TableRow key={row.person.id}>
-                                        <TableCell><Avatar src={row.person.imageProfile} /></TableCell>
-                                        <TableCell component="th" scope="row">{row.person.name + ' ' + row.person.lastName}</TableCell>
+                                        <TableCell component="th" scope="row">{row.person.objectType}</TableCell>
+                                        {row.person.personalContacts ?
+                                        <TableCell component="th" scope="row">
+                                            {
+                                                row.person.personalContacts.map(c =>
+                                                    <Typography variant="body22">
+                                                        <pre style={{ fontFamily: 'inherit' }}>
+                                                        {c.contactType + ': ' + c.value}
+                                                        </pre>
+                                                    </Typography>
+                                                )
+                                            }
+                                        </TableCell>
+                                            : null }
+                                        {row.person.universityContacts ?
+                                        <TableCell component="th" scope="row">
+                                            {
+                                                row.person.universityContacts.map(c =>
+                                                    <Typography variant="body22">
+                                                        <pre style={{ fontFamily: 'inherit' }}>
+                                                        {c.contactType + ': ' + c.value}
+                                                        </pre>
+                                                    </Typography>
+                                                )
+                                            }
+                                        </TableCell>
+                                            : null }
                                         {row.person.personIdentification ?
                                             <TableCell>{row.person.personIdentification.identification}</TableCell>
                                             :
@@ -86,6 +119,7 @@ function Row(props) {
                                             <TableCell>{row.person.universityIdentification.identification}</TableCell>
                                             :
                                             null }
+                                        <TableCell>{row.person.address.city}</TableCell>
                                         <TableCell>{row.person.status}</TableCell>
                                         <TableCell>{row.person.birthday}</TableCell>
                                     </TableRow>
@@ -108,6 +142,7 @@ export default function Users({users}) {
             <Table aria-label="collapsible table">
                 <TableHead>
                     <TableRow>
+                        <TableCell />
                         <TableCell />
                         <TableCell>User Name</TableCell>
                         <TableCell>Fecha de Creación</TableCell>
