@@ -27,7 +27,7 @@ import SendIcon from '@mui/icons-material/Send';
 import Divider from "@mui/material/Divider";
 import TextField from '@mui/material/TextField';
 import usePost from '../../hooks/usePost';
-import {cancelInvitation, resendInvitation} from "../api/invitation/invitationsApi";
+import {cancelInvitation, putInvitation, resendInvitation} from "../api/invitation/invitationsApi";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
@@ -38,11 +38,14 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export default function Invitations(props) {
 
     const [rowDeleteIndex, setRowDeleteIndex] = React.useState(0);
+    const [rowEditableIndex, setRowEditableIndex] = React.useState(0);
+    const [rowResendIndex, setRowResendIndex] = React.useState(0);
     const [rowEditable, setRowEditable] = React.useState(0);
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
     const [rowOnResend, setRowOnResend] = React.useState(0);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [openResendDialog, setOpenResendDialog] = React.useState(false);
+    const [openEditDialog, setOpenEditDialog] = React.useState(false);
     const [openInvitationDialog, setOpenInvitationDialog] = React.useState(false);
     const { data: session, status } = useSession();
     const [invitations, SetInvitations] = React.useState(props.invitations);
@@ -51,9 +54,11 @@ export default function Invitations(props) {
     const [openSnackbarOK, setOpenSnackbarOK] = React.useState(false);
     const [openSnackbarError, setOpenSnackbarError] = React.useState(false);
 
-    const handleEdit = (event, id) => {
+    const handleEdit = (event, row, index) => {
         event.preventDefault();
-        setRowEditable(id);
+        setRowEditableIndex(index);
+        setRowEditable(row);
+        handleClickOpenEditDialog();
     }
     const handleDelete = (event, row, index) => {
         event.preventDefault();
@@ -61,21 +66,20 @@ export default function Invitations(props) {
         setRowOnDelete(row);
         handleClickOpenDialog();
     }
-    const handleResend = (event, row) => {
+    const handleResend = (event, row, index) => {
         event.preventDefault();
+        setRowResendIndex(index);
         setRowOnResend(row);
         handleClickOpenResendDialog();
     }
 
     const handleConfirmationDelete = async (event) => {
         event.preventDefault();
-        const response = await cancelInvitation(session, rowOnDelete);
+        const response = await cancelInvitation(session, rowOnDelete.id);
         if (response && response.ok) {
-            invitations.splice(rowDeleteIndex, 1);
-            rowOnDelete.invitationStatus = 'CANCELED';
-            invitations.push(rowOnDelete);
+            const row = await response.json();
+            invitations[rowDeleteIndex] = row;
             SetInvitations(invitations);
-            console.log(invitations);
             handleOpenSnackbar("S")
         } else {
             handleOpenSnackbar("E")
@@ -84,13 +88,37 @@ export default function Invitations(props) {
     }
     const handleConfirmationResend  = async (event) => {
         event.preventDefault();
-        const response = await resendInvitation(session, rowOnResend);
+        const response = await resendInvitation(session, rowOnResend.id);
         if (response && response.ok) {
+            const row = await response.json();
+            invitations[rowResendIndex] = row;
+            SetInvitations(invitations);
             handleOpenSnackbar("S")
         } else {
             handleOpenSnackbar("E")
         }
         handleCloseResendDialog(event);
+    }
+    const handleConfirmationEdit  = async (event) => {
+        event.preventDefault();
+        const response = await putInvitation(session, rowEditable);
+        if (response && response.ok) {
+            const row = await response.json();
+            invitations[rowEditableIndex] = row;
+            SetInvitations(invitations);
+            handleOpenSnackbar("S")
+        } else {
+            handleOpenSnackbar("E")
+        }
+        handleCloseEditDialog(event);
+    }
+    const handleChangeRow = (event) => {
+        event.preventDefault();
+        const value = event.target.value;
+        const field = event.target.name;
+        //modalRow[field] = value;
+        setRowEditable({...rowEditable, [field]:value});
+        console.log(rowEditable);
     }
 
     const handleOpenSnackbar = (t) => {
@@ -113,20 +141,6 @@ export default function Invitations(props) {
             setOpenSnackbarOK(false);
         }
     };
-
-    const handleSave = async (event, id, codeFramework) => {
-        event.preventDefault();
-        // console.log(codeFramework);
-        setRowEditable(0);
-        refreshContent();
-    }
-    const handleEditable = (id) => {
-        if(id === rowEditable) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     const handleOpenInvitationDialog = () => {
         setOpenInvitationDialog(true);
@@ -170,13 +184,12 @@ export default function Invitations(props) {
         setOpenResendDialog(false);
     };
 
-    const refreshContent = async () => {
-    }
-
-    const handleChangeRow = (id, event) => {
-        event.preventDefault();
-    }
-
+    const handleClickOpenEditDialog = () => {
+        setOpenEditDialog(true);
+    };
+    const handleCloseEditDialog = () => {
+        setOpenEditDialog(false);
+    };
     const handleIcons = (status) => {
         // console.log(status);
         if(status === 'ACTIVE') {
@@ -220,36 +233,33 @@ export default function Invitations(props) {
                         <TableCell>Email</TableCell>
                         <TableCell>Estado</TableCell>
                         <TableCell>Vencimiento</TableCell>
+                        <TableCell  align={'center'}>Cantidad de envios</TableCell>
                         <TableCell>Acciones</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {invitations.map((row, index) =>
-                        <TableRow key={row.id} selected={handleEditable(row.id)}>
+                        <TableRow key={row.id}>
                             {/*<TableCell>{row.id}</TableCell>*/}
-                            <TableCell contentEditable={handleEditable(row.id)} onChange={(e) => handleChangeRow(row.legajo, e)}>{row.legajo}</TableCell>
-                            <TableCell contentEditable={handleEditable(row.id)}>{row.email}</TableCell>
+                            <TableCell>{row.legajo}</TableCell>
+                            <TableCell>{row.email}</TableCell>
                             <TableCell>
                                 {handleIcons(row.invitationStatus)}
                             </TableCell>
                             <TableCell>{row.dueDateTime}</TableCell>
+                            <TableCell align={'center'}>{row.numberOfDeliveries}</TableCell>
                             <TableCell width={250}>
                                 <Box sx={{ '& > :not(style)': { m: 0.5 }, display: 'inline' }}>
-                                    {handleEditable(row.id) ?
-                                        <Fab color="primary" aria-label="edit" size="small">
-                                            <SaveIcon fontSize={"small"} onClick={(e) => handleSave(e, row.id, row)}/>
-                                        </Fab>
-                                        :
-                                        row.invitationStatus == 'ACTIVE' ?
+                                    {row.invitationStatus == 'ACTIVE' ?
                                         <React.Fragment>
                                             <Fab color="primary" aria-label="edit" size="small" >
-                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, invitations[index])}/>
+                                                <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, invitations[index], index)}/>
                                             </Fab>
                                             <Fab color="error" aria-label="edit" size="small">
                                                 <CancelIcon fontSize={"small"} onClick={(e) => handleDelete(e, invitations[index], index)}/>
                                             </Fab>
                                             <Fab color="info" aria-label="edit" size="small">
-                                                <SendIcon fontSize={"small"} onClick={(e) => handleResend(e, invitations[index])}/>
+                                                <SendIcon fontSize={"small"} onClick={(e) => handleResend(e, invitations[index], index)}/>
                                             </Fab>
                                         </React.Fragment>
                                      : null
@@ -285,6 +295,50 @@ export default function Invitations(props) {
                         Confirmar
                     </Button>
                 </DialogActions>
+            </Dialog>
+            <Dialog open={openEditDialog} onClose={handleCloseEditDialog}>
+                <DialogTitle>Editar invitación</DialogTitle>
+                <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                >
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="legajo"
+                            label="Legajo"
+                            name="legajo"
+                            type="legajo"
+                            fullWidth
+                            variant="standard"
+                            onChange={handleChangeRow}
+                            value={rowEditable.legajo}
+                        />
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="email"
+                            label="Dirección de email"
+                            name="email"
+                            type="email"
+                            fullWidth
+                            variant="standard"
+                            onChange={handleChangeRow}
+                            value={rowEditable.email}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseEditDialog}>Cancelar</Button>
+                        <Button onClick={handleConfirmationEdit} autoFocus>
+                            Confirmar
+                        </Button>
+                    </DialogActions>
+                </Box>
             </Dialog>
             <Dialog
                 open={openResendDialog}
