@@ -334,3 +334,5 @@ export default function ProjectInformation(props) {
     );
 
 }
+
+ProjectInformation.auth = true;

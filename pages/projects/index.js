@@ -30,7 +30,7 @@ export default function Projects({projects}) {
             ) :
                 <ListItem>
                     <ListItemButton component="a" href="/projects/new">
-                        <Avatar><AddIcon /></Avatar>
+                        <Avatar sx={{mr:2}}><AddIcon /></Avatar>
                         <ListItemText primary="Crear proyecto" />
                     </ListItemButton>
                 </ListItem>

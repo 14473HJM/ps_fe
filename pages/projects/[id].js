@@ -443,8 +443,10 @@ export default function BasicTabs(props) {
     const {data: session, status} = useSession()
     const [value, setValue] = React.useState(0);
     const [project, setProject] = React.useState(props._project);
+    const [availableInternetPlatforms, setAvailableInternetPlatforms] = React.useState(props._availableInternetPlatforms);
     const [infSegDis, setInfSegDis] = React.useState(handleDisabled(session, project));
 
+    console.log(props);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -468,7 +470,7 @@ export default function BasicTabs(props) {
                 <ProjectInformation project={project} setProject={setProject} isDisabled={infSegDis.infoDisable}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <ProjectMonitoring project={project} setProject={setProject} isDisabled={infSegDis.segDisable}/>
+                <ProjectMonitoring project={project} setProject={setProject} isDisabled={infSegDis.segDisable} availableInternetPlatforms={availableInternetPlatforms}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <ProjectConversation project={project} setProject={setProject} isDisabled={infSegDis.convDisable}/>
@@ -494,6 +496,8 @@ export async function getServerSideProps(context) {
     const { params } = context;
     console.log(context);
     const token = await getToken({ req })
+    let _project = {};
+    let _availableInternetPlatforms = null;
     if(token != null && params.id != 'new') {
         const {access_token} = token
 
@@ -508,10 +512,20 @@ export async function getServerSideProps(context) {
 
         // Fetch data from external API
         const res = await fetch(`http://localhost:8080/ps/projects/${params.id}`, options)
-        const _project = await res.json()
+        _project = await res.json();
         // Pass data to the page via props
-        return {props: {_project}}
-    } else {
-        return {props: {_project: {}}};
+    } else if(token != null) {
+        const {access_token} = token
+        const options = {
+            headers: {
+                'accept': '*/*',
+                'charset': 'UTF-8',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access_token,
+            }
+        };
+        const resAvailableInternetPlatforms = await fetch(`http://localhost:8080/ps/config/internet/platforms`, options)
+        _availableInternetPlatforms = await resAvailableInternetPlatforms.json();
     }
+    return {props: {_project, _availableInternetPlatforms}}
 }
