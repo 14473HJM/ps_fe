@@ -30,6 +30,9 @@ import usePost from '../../hooks/usePost';
 import {cancelInvitation, putInvitation, resendInvitation} from "../api/invitation/invitationsApi";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -49,6 +52,7 @@ export default function Invitations(props) {
     const [openInvitationDialog, setOpenInvitationDialog] = React.useState(false);
     const { data: session, status } = useSession();
     const [invitations, SetInvitations] = React.useState(props.invitations);
+    const [invitationsFiltered, setInvitationsFiltered] = React.useState(props.invitations);
     const [invitationData, setInvitationData] = React.useState(null);
     const { data, error, loading } = usePost('/api/invitation', invitationData);
     const [openSnackbarOK, setOpenSnackbarOK] = React.useState(false);
@@ -64,6 +68,9 @@ export default function Invitations(props) {
         event.preventDefault();
         setRowDeleteIndex(index);
         setRowOnDelete(row);
+        console.log(index);
+        console.log(row);
+        console.log(row.index);
         handleClickOpenDialog();
     }
     const handleResend = (event, row, index) => {
@@ -213,6 +220,20 @@ export default function Invitations(props) {
         }
     }
 
+    const filterData = (filter) => {
+        if (!filter) {
+            return setInvitationsFiltered(invitations);
+        } else {
+            return setInvitationsFiltered(invitations.filter(
+                (i) => i.invitationStatus.toLowerCase().includes(filter) ||
+                    i.email.toLowerCase().includes(filter) ||
+                    i.id.toString().toLowerCase().includes(filter) ||
+                    i.legajo.toString().toLowerCase().includes(filter) ||
+                    i.dueDateTime.toLowerCase().includes(filter)
+            ));
+        }
+    };
+
     return (
         <React.Fragment>
             <Box sx={{display: 'flex', mr: 10, mb:3}}>
@@ -223,6 +244,21 @@ export default function Invitations(props) {
                         onClick={handleOpenInvitationDialog}>
                     <AddIcon />
                 </Fab>
+                <TextField
+                    id="search-bar"
+                    className="text"
+                    onChange={(e) => {
+                        filterData(e.target.value.toLowerCase());
+                    }}
+                    label="Ingresar algun valor de busqueda"
+                    variant="outlined"
+                    placeholder="Search..."
+                    size="small"
+                    sx={{ml: 10, width: 500}}
+                />
+                <IconButton aria-label="search" disabled={true}>
+                    <SearchIcon style={{ fill: "blue" }} />
+                </IconButton>
             </Box>
             <Divider />
             <Table size="small">
@@ -238,7 +274,7 @@ export default function Invitations(props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {invitations.map((row, index) =>
+                    {invitationsFiltered.map((row, index) =>
                         <TableRow key={row.id}>
                             {/*<TableCell>{row.id}</TableCell>*/}
                             <TableCell>{row.legajo}</TableCell>
