@@ -229,7 +229,6 @@ export default function Invitations(props) {
     };
 
     const getRowIndex = (row) => {
-        //return invitations.find(r => r.id == row.id).index;
         return invitations.indexOf(row);
     }
 
@@ -251,7 +250,7 @@ export default function Invitations(props) {
                     }}
                     label="Ingresar algun valor de busqueda"
                     variant="outlined"
-                    placeholder="Search..."
+                    placeholder="Buscar..."
                     size="small"
                     sx={{ml: 10, width: 500}}
                 />
