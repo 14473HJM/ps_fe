@@ -27,7 +27,7 @@ export default function ProjectInformation(props) {
     const [isDisabled, setIsDisabled] = React.useState(props.isDisabled);
     const [body, setBody] = React.useState(null);
     const [currentScope, setCurrentScope] = React.useState('');
-    const [scopes, setScopes] = React.useState([]);
+    const [scopes, setScopes] = React.useState((props.project && props.project.scopes) || []);
     const [scopetoEdit, setScopetoEdit] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects', body);
     const router = useRouter()
