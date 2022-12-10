@@ -8,7 +8,6 @@ const usePost = (url, body) => {
 
   useEffect(() => {
     if (url && body) {
-      console.log(body)
       setloading(true);
       axios.post(url, body)
         .then(res => {
