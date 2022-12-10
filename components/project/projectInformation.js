@@ -11,8 +11,14 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from '@mui/icons-material/Close';
 import Fab from "@mui/material/Fab";
+import InputAdornment from "@mui/material/InputAdornment";
 import { useRouter } from 'next/router'
 import usePost from '../../hooks/usePost';
 
@@ -22,6 +28,7 @@ export default function ProjectInformation(props) {
     const [body, setBody] = React.useState(null);
     const [currentScope, setCurrentScope] = React.useState('');
     const [scopes, setScopes] = React.useState([]);
+    const [scopetoEdit, setScopetoEdit] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects', body);
     const router = useRouter()
 
@@ -62,6 +69,36 @@ export default function ProjectInformation(props) {
             { scope: currentScope },
         ]);
         setCurrentScope('');
+    }
+
+    const handleEditScope = index => {
+        setScopetoEdit({ index, ...scopes[index] });
+    }
+
+    const handleDeleteScope = index => {
+        const newScopes = [...scopes];
+        newScopes.splice(index, 1);
+        setScopes(newScopes);
+    }
+
+    const handleOnChangeScopeEdit = e => {
+        setScopetoEdit({
+            ...scopetoEdit,
+            scope: e.target.value,
+        })
+    }
+
+    const handleSaveScopeEdit = () => {
+        const newScopes = [...scopes];
+        newScopes[scopetoEdit.index] = {
+            scope: scopetoEdit.scope,
+        };
+        setScopes(newScopes);
+        setScopetoEdit(null);
+    }
+
+    const handleCancelScopeEdit = () => {
+        setScopetoEdit(null);
     }
 
     React.useEffect(() => {
@@ -159,13 +196,59 @@ export default function ProjectInformation(props) {
                     {scopes.length > 0 &&
                         <Grid item xs={12} sm={12}>
                             <List>
-                                {scopes.map(item => (
-                                    <ListItem key={`${item.scope}-list-item`}>
-                                        <ListItemText
-                                            primary={item.scope}
-                                        />
-                                    </ListItem>
-                                ))}
+                                {scopes.map((item, index) => { 
+                                    if (scopetoEdit && scopetoEdit.index === index) {
+                                        return (
+                                            <ListItem
+                                                key={`${item.scope}-list-item`}
+                                                dense
+                                                sx={{ px: 0.5 }}
+                                            >
+                                                <TextField
+                                                    required
+                                                    id="scope"
+                                                    name="scope"
+                                                    fullWidth
+                                                    autoFocus
+                                                    autoComplete="scope"
+                                                    value={scopetoEdit.scope}
+                                                    disabled={isDisabled}
+                                                    onChange={handleOnChangeScopeEdit}
+                                                    margin="none"
+                                                    InputProps={{
+                                                        endAdornment: <InputAdornment position="end">
+                                                            <IconButton edge="end" aria-label="save" onClick={handleSaveScopeEdit}>
+                                                                <SaveIcon />
+                                                            </IconButton>
+                                                            <IconButton edge="end" aria-label="cancel" onClick={handleCancelScopeEdit}>
+                                                                <CloseIcon />
+                                                            </IconButton>
+                                                        </InputAdornment>,
+                                                    }}
+                                                />
+                                            </ListItem>
+                                        )
+                                    } else {
+                                        return (
+                                        <ListItem
+                                            key={`${item.scope}-list-item`}
+                                            secondaryAction={
+                                                <>
+                                                    <IconButton edge="end" aria-label="edit" onClick={() => handleEditScope(index)}>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                    <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteScope(index)}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </>
+                                            }
+                                        >
+                                            <ListItemText
+                                                primary={item.scope}
+                                            />
+                                        </ListItem>
+                                    )}
+                                })}
                             </List>
                         </Grid>
                     }
@@ -178,7 +261,7 @@ export default function ProjectInformation(props) {
                                     name="scope"
                                     fullWidth
                                     autoComplete="scope"
-                                    defaultValue={currentScope}
+                                    value={currentScope}
                                     disabled={isDisabled}
                                     onChange={handleScopeChange}
                                 />
@@ -247,7 +330,6 @@ export default function ProjectInformation(props) {
                     >Enviar</Button>
                 </Box>
             </Box>
-
         </React.Fragment>
     );
 
