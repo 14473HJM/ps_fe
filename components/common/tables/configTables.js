@@ -28,6 +28,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 import {visuallyHidden} from "@mui/utils";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -47,7 +49,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
     const [seeDeleted, setSeeDeleted] = React.useState(false);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(true);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
 
@@ -101,6 +103,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
         //modalRow[field] = value;
         setModalRow({...modalRow, [field]:value});
         console.log(modalRow);
+        handleActionEnabled();
     }
     const handleNew = (event) => {
         event.preventDefault();
@@ -125,6 +128,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
     }
     //UPDATE-DELETE_CREATE HANDLERS
     const handleEdit = (event, row) => {
+        console.log(row);
         event.preventDefault();
         setModalRow(row);
         handleOpenModal();
@@ -227,7 +231,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
     };
 
     return (
-        <React.Fragment >
+        <React.Fragment>
             <Box sx={{display: 'flex', mr: 10}}>
                 <Typography component="h1" variant="h5" color="primary" gutterBottom mr={4}>
                     {title}
@@ -397,20 +401,38 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                     </Typography>
                     {columns.map((column) => (
                     <Grid item xs={12} sm={12} m={2} id={column.id}>
-                        <TextField
-                            required={column.required}
-                            disabled={column.disabled}
-                            id={column.id}
-                            name={column.name}
-                            label={column.label}
-                            onChange={handleChangeRow}
-                            onBlur={handleActionEnabled}
-                            fullWidth
-                            autoComplete="value"
-                            variant="standard"
-                            inputProps={{maxlength: column.maxlength}}
-                            value={modalRow ? modalRow[column.name] : null}
-                        />
+                        {column.select ?
+                            <Select
+                                labelId={column.label}
+                                label={column.label}
+                                id={column.id}
+                                name={column.name}
+                                fullWidth
+                                required={column.required}
+                                disabled={column.disabled}
+                                defaultValue={modalRow ? modalRow[column.name] : null}
+                                onBlur={handleChangeRow}
+                            >
+                                {column.select.split(',').map((i, index) =>
+                                    <MenuItem id={i} key={i} value={i}>{i}</MenuItem>
+                                )}
+                            </Select>
+                            :
+                            <TextField
+                                required={column.required}
+                                disabled={column.disabled}
+                                id={column.id}
+                                name={column.name}
+                                label={column.label}
+                                onChange={handleChangeRow}
+                                onBlur={handleActionEnabled}
+                                fullWidth
+                                autoComplete="value"
+                                variant="standard"
+                                inputProps={{maxlength: column.maxlength}}
+                                value={modalRow ? modalRow[column.name] : null}
+                            />
+                        }
                     </Grid>
                     ))}
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} >
