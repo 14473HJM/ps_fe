@@ -100,6 +100,36 @@ export const putProject = async (session, project) => {
     }
 };
 
+export const addTutor = async (session, projectId, tutorId, comment) => {
+    console.log(projectId)
+    console.log(tutorId)
+    const myHeaders = await getHeaders(session);
+    if(!myHeaders) {
+        return null;
+    } else {
+        if(comment != null) {
+            const options = {
+                method: 'PUT',
+                headers: myHeaders,
+                cache: 'default',
+                body: JSON.stringify(comment),
+            };
+            const res = await fetch(`http://localhost:8080/ps/projects/${projectId}/tutor/${tutorId}`, options);
+            console.log(res);
+            return res;
+        } else {
+            const options = {
+                method: 'PUT',
+                headers: myHeaders,
+                cache: 'default',
+            };
+            const res = await fetch(`http://localhost:8080/ps/projects/${projectId}/tutor/${tutorId}`, options);
+            console.log(res);
+            return res;
+        }
+    }
+};
+
 export const deleteProject = async (session, project) => {
     const myHeaders = await getHeaders(session);
     if(!myHeaders) {
