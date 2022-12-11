@@ -9,59 +9,27 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 
 export default function PersonlInformation(props) {
-    const student = props.student;
-    const setStudent = props.setStudent;
-    const handleNext = props.handleNext;
+    const { student, setStudent, handleNext } = props;
     const [formValidation, setFormValidation] = React.useState(false);
+    const [errors, setErrors] = React.useState({
+        name: false,
+        lastName: false,
+        identificationType: false,
+        identification: false,
+        birthday: false
+    })
 
-    const handleName = (event) => {
-        event.preventDefault();
-        if(!event.target.value && !event.target.value.trim().length) {
-            student.name = null;
-        } else {
-            student.name = event.target.value;
-            setStudent(student);
+    const handleOnBlur = (event) => {
+        const { name, value } = event.target;
+        if (['identificationType', 'identification'].includes(name)) {
+            student.personIdentification[name] = value || null;
         }
-        handleChangeForm();
-    };
-
-    const handleLastName = (event) => {
-        if(!event.target.value && !event.target.value.trim().length) {
-            student.lastName = null
-        } else {
-            student.lastName = event.target.value;
-            setStudent(student);
-        }
-        handleChangeForm();
-    };
-
-    const handleIdType = (event) => {
-        if(!event.target.value && !event.target.value.trim().length) {
-            student.personIdentification.identificationType = null;
-        } else {
-            student.personIdentification.identificationType = event.target.value;
-            setStudent(student);
-        }
-        handleChangeForm();
-    };
-
-    const handleIdentification = (event) => {
-        if(!event.target.value && !event.target.value.trim().length) {
-            student.personIdentification.identification = null;
-        } else {
-            student.personIdentification.identification = event.target.value;
-            setStudent(student);
-        }
-        handleChangeForm();
-    };
-
-    const handleBirthDay = (event) => {
-        if(!event.target.value && !event.target.value.trim().length) {
-            student.birthday = null;
-        } else {
-            student.birthday = event.target.value;
-            setStudent(student);
-        }
+        student[name] = value || null;
+        setStudent(student);
+        setErrors({
+            ...errors,
+            [name]: !value,
+        });
         handleChangeForm();
     };
 
@@ -99,9 +67,9 @@ export default function PersonlInformation(props) {
     return (
         <React.Fragment>
             <Box component="form"
-                 onSubmit={handleNext}
-                 onChange={handleErrors}
-                 noValidate sx={{ mt: 1 }}
+                onSubmit={handleNext}
+                onChange={handleErrors}
+                noValidate sx={{ mt: 1 }}
             >
                 <Typography variant="h6" gutterBottom>
                     Ingresá tus datos personales
@@ -110,8 +78,6 @@ export default function PersonlInformation(props) {
                     <Grid item xs={12} sm={4}>
                         <TextField
                             required
-                            requiredMessage="This field is required."
-                            errorTarget="under"
                             id="legajo"
                             name="legajo"
                             label="Legajo"
@@ -125,38 +91,42 @@ export default function PersonlInformation(props) {
                     <Grid item xs={12} sm={4}>
                         <TextField
                             required
+                            error={errors.name}
                             id="name"
                             name="name"
-                            label="Name"
+                            label="Nombre"
                             fullWidth
                             autoComplete="name"
                             variant="standard"
                             defaultValue={student.name}
-                            onBlur={handleName}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <TextField
                             required
+                            error={errors.lastName}
                             id="lastName"
                             name="lastName"
-                            label="Last Name"
+                            label="Apellido"
                             fullWidth
                             autoComplete="lastName"
                             variant="standard"
                             defaultValue={student.lastName}
-                            onBlur={handleLastName}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <Select
                             labelId="identificationType-select"
                             id="identificationType-select"
-                            label="Identification Type"
+                            name="identificationType"
+                            label="Tipo de identificación"
                             fullWidth
                             required
+                            error={errors.identificationType}
                             defaultValue={student.personIdentification.identificationType || "DNI"}
-                            onBlur={handleIdType}
+                            onBlur={handleOnBlur}
                         >
                             <MenuItem value="DNI">DNI</MenuItem>
                             <MenuItem value="CUIL">CUIL</MenuItem>
@@ -166,28 +136,31 @@ export default function PersonlInformation(props) {
                     <Grid item xs={12} sm={4}>
                         <TextField
                             required
+                            error={errors.identification}
                             id="identification"
                             name="identification"
-                            label="Identification Number"
+                            label="Número de identificación"
                             fullWidth
                             autoComplete="identification"
                             variant="standard"
                             defaultValue={student.personIdentification.identification}
-                            onBlur={handleIdentification}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <TextField
+                            required
+                            error={errors.birthday}
                             id="birthday"
                             name="birthday"
                             type="date"
-                            label="Birth Day"
+                            label="Fecha de nacimiento"
                             sx={{ width: 220 }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
                             defaultValue={student.birthday? student.birthday : "1900-01-01"}
-                            onBlur={handleBirthDay}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                 </Grid>
@@ -200,9 +173,6 @@ export default function PersonlInformation(props) {
                     >Siguiente</Button>
                 </Box>
             </Box>
-            {/* <Box id="errors" sx={{ mt: 1 }}>
-                {handleErrors()}
-            </Box> */}
         </React.Fragment>
     );
 }

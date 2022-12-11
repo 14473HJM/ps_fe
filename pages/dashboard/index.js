@@ -1,8 +1,6 @@
 import { useSession, getSession } from "next-auth/react"
 import Link from "next/link";
-import axios from "axios";
-import { getToken } from "next-auth/jwt"
-import Layout from "../../components/layout/layout";
+import { getUsers } from '../../services/users.service';
 
 export default function Dashboard({users}) {
     const { data: session, status } = useSession()
@@ -43,27 +41,5 @@ export default function Dashboard({users}) {
 Dashboard.auth = true;
 
 export async function getServerSideProps(context) {
-
-    const { req } = context;
-    const token = await getToken({ req })
-    if(token != null) {
-        const {access_token} = token
-
-        const options = {
-            headers: {
-                'accept': '*/*',
-                'charset': 'UTF-8',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + access_token,
-            }
-        };
-
-        // Fetch data from external API
-        const res = await fetch(`http://localhost:8080/ps/users`, options)
-        const users = await res.json()
-        // Pass data to the page via props
-        return {props: {users}}
-    } else {
-        return {props: {}};
-    }
+    return await getUsers(context);
 }

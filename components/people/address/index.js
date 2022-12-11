@@ -11,12 +11,13 @@ import axios from "axios";
 import { useRouter } from 'next/router'
 
 
-export default function AddressForm() {
+export default function AddressForm({ person }) {
+    const { address: { street, streetNumber, zipCode, detail, city, province: initialProvince } } = person;
 
     const { data: session, status } = useSession();
 
 
-    const [province, setProvince] = React.useState('');
+    const [province, setProvince] = React.useState(initialProvince);
 
     const handleChange = (event) => {
         setProvince(event.target.value);
@@ -24,13 +25,6 @@ export default function AddressForm() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // console.log(event.target.street.value)
-        // console.log(event.target.streetNumber.value)
-        // console.log(event.target.zipCode.value)
-        // console.log(event.target.detail.value)
-        // console.log(event.target.city.value)
-        // console.log({province})
-        // console.log(event.target.country.value)
         const address = {
             street: event.target.street.value,
             streetNumber: event.target.streetNumber.value,
@@ -49,8 +43,8 @@ export default function AddressForm() {
     return (
         <React.Fragment>
             <Box component="form"
-                 onSubmit={handleSubmit}
-                 noValidate sx={{ mt: 1 }}
+                onSubmit={handleSubmit}
+                noValidate sx={{ mt: 1 }}
             >
                 <Typography variant="h6" gutterBottom>
                     Set your personal address
@@ -61,10 +55,11 @@ export default function AddressForm() {
                             required
                             id="street"
                             name="street"
-                            label="Street Name"
+                            label="Calle"
                             fullWidth
                             autoComplete="street"
                             variant="standard"
+                            defaultValue={street}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -72,10 +67,11 @@ export default function AddressForm() {
                             required
                             id="streetNumber"
                             name="streetNumber"
-                            label="Street Number"
+                            label="Número"
                             fullWidth
                             autoComplete="streetNumber"
                             variant="standard"
+                            defaultValue={streetNumber}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -83,20 +79,22 @@ export default function AddressForm() {
                             required
                             id="zipCode"
                             name="zipCode"
-                            label="Zip / Postal code"
+                            label="Código postal"
                             fullWidth
                             autoComplete="zipCode"
                             variant="standard"
+                            defaultValue={zipCode}
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             id="detail"
                             name="detail"
-                            label="Additional Details"
+                            label="Detalles adicionales"
                             fullWidth
                             autoComplete="detail"
                             variant="standard"
+                            defaultValue={detail}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -104,10 +102,11 @@ export default function AddressForm() {
                             required
                             id="city"
                             name="city"
-                            label="City"
+                            label="Ciudad"
                             fullWidth
                             autoComplete="city"
                             variant="standard"
+                            defaultValue={city}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -115,7 +114,7 @@ export default function AddressForm() {
                             labelId="province-select"
                             id="province-select"
                             value={province}
-                            label="Age"
+                            label="Provincia"
                             onChange={handleChange}
                             fullWidth
                         >
@@ -150,7 +149,7 @@ export default function AddressForm() {
                             required
                             id="country"
                             name="country"
-                            label="Country"
+                            label="País"
                             fullWidth
                             autoComplete="country"
                             variant="standard"
@@ -159,10 +158,11 @@ export default function AddressForm() {
                         />
                     </Grid>
                     <Grid item xs={12}
-                          container
-                          direction="row"
-                          justifyContent="flex-end"
-                          alignItems="center">
+                        container
+                        direction="row"
+                        justifyContent="flex-end"
+                        alignItems="center"
+                    >
                         <Button variant="contained" type="submit" >Save</Button>
                     </Grid>
                 </Grid>

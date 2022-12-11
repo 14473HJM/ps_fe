@@ -17,6 +17,24 @@ export default function AddressInformation(props) {
     const handleBack = props.handleBack;
     const [province, setProvince] = React.useState('X');
     const [formValidation, setFormValidation] = React.useState(false);
+    const [errors, setErrors] = React.useState({
+        street: false,
+        streetNumber: false,
+        zipCode: false,
+        city: false,
+        province: false
+    })
+
+    const handleOnBlur = (event) => {
+        const { name, value } = event.target;
+        student.address[name] = value || null;
+        setStudent(student);
+        setErrors({
+            ...errors,
+            [name]: !value,
+        });
+        handleChangeForm();
+    };
 
     const handleProvince = (event) => {
         console.log(event.target)
@@ -102,76 +120,83 @@ export default function AddressInformation(props) {
                     <Grid item xs={12}>
                         <TextField
                             required
+                            error={errors.street}
                             id="street"
                             name="street"
-                            label="Street Name"
+                            label="Calle"
                             fullWidth
                             autoComplete="street"
                             variant="standard"
                             defaultValue={student.address.street}
-                            onBlur={handleStreet}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             required
+                            error={errors.streetNumber}
                             id="streetNumber"
                             name="streetNumber"
-                            label="Street Number"
+                            label="Número"
                             fullWidth
                             autoComplete="streetNumber"
                             variant="standard"
                             defaultValue={student.address.streetNumber}
-                            onBlur={handleStreetNumber}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             required
+                            error={errors.zipCode}
                             id="zipCode"
                             name="zipCode"
-                            label="Zip / Postal code"
+                            label="Código postal"
                             fullWidth
                             autoComplete="zipCode"
                             variant="standard"
                             defaultValue={student.address.zipCode}
-                            onBlur={handleZipCode}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             id="detail"
                             name="detail"
-                            label="Additional Details"
+                            label="Detalles adicionales"
                             fullWidth
                             autoComplete="detail"
                             variant="standard"
                             defaultValue={student.address.detail}
-                            onBlur={handleDetail}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <TextField
                             required
+                            error={errors.city}
                             id="city"
                             name="city"
-                            label="City"
+                            label="Ciudad"
                             fullWidth
                             autoComplete="city"
                             variant="standard"
                             defaultValue={student.address.city}
-                            onBlur={handleCity}
+                            onBlur={handleOnBlur}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <Select
+                            required
+                            error={errors.province}
                             labelId="province-select"
                             id="province-select"
+                            name="province"
                             value={province}
-                            label="Age"
-                            onChange={handleProvince}
+                            label="Provincia"
+                            onChange={e => setProvince(e.target.value) }
                             fullWidth
-                            onBlur={handleProvince}
+                            onBlur={handleOnBlur}
                         >
                             <MenuItem value="Buenos Aires">Buenos Aires</MenuItem>
                             <MenuItem value="Catamarca">Catamarca</MenuItem>
@@ -202,9 +227,10 @@ export default function AddressInformation(props) {
                     <Grid item xs={12} sm={4}>
                         <TextField
                             required
+                            error={errors.country}
                             id="country"
                             name="country"
-                            label="Country"
+                            label="País"
                             fullWidth
                             autoComplete="country"
                             variant="standard"

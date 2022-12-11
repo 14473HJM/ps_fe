@@ -12,6 +12,7 @@ import ProjectPresentation from "../../components/project/projectPresentation";
 import ProjectValuation from "../../components/project/projectValuation";
 import {getToken} from "next-auth/jwt";
 import ProjectStepper from "../../components/project/projectStepper";
+import { getProjectById } from '../../services/projects.service';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;

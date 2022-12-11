@@ -2,14 +2,12 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import AddressForm from "../../components/people/address";
 import {useSession, getSession } from "next-auth/react";
-import Layout from "../../components/layout/layout";
-import Dashboard from "../dashboard";
 import PeopleForm from "../../components/people/people";
 import ContactForm from "../../components/people/contact";
+import { getUser } from '../../services/users.service';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -46,7 +44,7 @@ function a11yProps(index) {
     };
 }
 
-export default function BasicTabs() {
+export default function BasicTabs({ users }) {
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -63,10 +61,10 @@ export default function BasicTabs() {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <PeopleForm />
+                <PeopleForm {...users} />
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <AddressForm />
+                <AddressForm {...users} />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <ContactForm />
@@ -76,3 +74,7 @@ export default function BasicTabs() {
 }
 
 BasicTabs.auth = true;
+
+export async function getServerSideProps(context) {
+    return await getUser(context);
+}

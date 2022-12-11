@@ -9,8 +9,8 @@ import Box from "@mui/material/Box";
 import {useSession, getSession} from "next-auth/react";
 import axios from "axios";
 
-export default function PeopleForm({legajo, context}) {
-
+export default function PeopleForm({legajo, context, person}) {
+    const { universityIdentification, name, lastName, personIdentification, birthday } = person;
     const { data: session, status } = useSession();
 
     const [identificationType, setIdentificationType] = React.useState('');
@@ -56,8 +56,8 @@ export default function PeopleForm({legajo, context}) {
                             fullWidth
                             autoComplete="legajo"
                             variant="standard"
-                            defaultValue={legajo}
-                            disabled={legajo? true : false}
+                            defaultValue={universityIdentification.identification}
+                            disabled
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -69,6 +69,7 @@ export default function PeopleForm({legajo, context}) {
                             fullWidth
                             autoComplete="name"
                             variant="standard"
+                            defaultValue={name}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -80,13 +81,14 @@ export default function PeopleForm({legajo, context}) {
                             fullWidth
                             autoComplete="lastName"
                             variant="standard"
+                            defaultValue={lastName}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
                         <Select
                             labelId="identificationType-select"
                             id="identificationType-select"
-                            value={identificationType}
+                            value={personIdentification.identificationType}
                             label="Identification Type"
                             onChange={handleChangeIdentificationType}
                             fullWidth
@@ -105,6 +107,7 @@ export default function PeopleForm({legajo, context}) {
                             fullWidth
                             autoComplete="identification"
                             variant="standard"
+                            defaultValue={personIdentification.identification}
                         />
                     </Grid>
                     <Grid item xs={12} sm={4}>
@@ -112,7 +115,7 @@ export default function PeopleForm({legajo, context}) {
                             id="birthday"
                             name="birthday"
                             type="date"
-                            defaultValue="2000-01-01"
+                            defaultValue={birthday}
                             label="Birth Day"
                             //value={birthdate}
                             sx={{ width: 220 }}

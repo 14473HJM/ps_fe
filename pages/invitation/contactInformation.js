@@ -25,10 +25,7 @@ export default function ContactInformation(props) {
         p: 4,
     };
 
-    const student = props.student;
-    const setStudent = props.setStudent;
-    const handleNext = props.handleNext;
-    const handleBack = props.handleBack;
+    const { student, setStudent, handleNext, handleBack } = props;
     const [formValidation, setFormValidation] = React.useState(false);
     const [modalOpen, setModalOpen] = React.useState(false);
     const [contactType, setContactType] = React.useState(null);

@@ -6,8 +6,8 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import WorkIcon from '@mui/icons-material/Work';
 import AddIcon from '@mui/icons-material/Add';
-import {getToken} from "next-auth/jwt";
 import ListItemButton from "@mui/material/ListItemButton";
+import { getProjects } from '../../services/projects.service';
 
 export default function Projects({projects}) {
 
@@ -30,7 +30,11 @@ export default function Projects({projects}) {
             ) :
                 <ListItem>
                     <ListItemButton component="a" href="/projects/new">
-                        <Avatar sx={{mr:2}}><AddIcon /></Avatar>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <AddIcon />
+                            </Avatar>
+                        </ListItemAvatar>
                         <ListItemText primary="Crear proyecto" />
                     </ListItemButton>
                 </ListItem>
@@ -43,27 +47,5 @@ export default function Projects({projects}) {
 Projects.auth = true;
 
 export async function getServerSideProps(context) {
-
-    const { req } = context;
-    const token = await getToken({ req })
-    if(token != null) {
-        const {access_token} = token
-        const {userId} = token
-        const options = {
-            headers: {
-                'accept': '*/*',
-                'charset': 'UTF-8',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + access_token,
-            }
-        };
-
-        // Fetch data from external API
-        const res = await fetch(`http://localhost:8080/ps/projects`, options)
-        const projects = await res.json()
-        // Pass data to the page via props
-        return {props: {projects}}
-    } else {
-        return {props: {}};
-    }
+    return await getProjects(context);
 }
