@@ -67,7 +67,7 @@ export default function BasicTabs({ users }) {
                 <AddressForm {...users} />
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <ContactForm />
+                <ContactForm {...users} />
             </TabPanel>
         </Box>
     );

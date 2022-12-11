@@ -8,11 +8,6 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
 import {useTheme} from "@mui/material/styles";
 import EditIcon from '@mui/icons-material/Edit';
 import EmailIcon from '@mui/icons-material/Email';
@@ -25,17 +20,8 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import Modal from '@mui/material/Modal';
 
-
-const userContacts =
-    [{
-    'contactType':'EMAIL', 'value':'hernanjesusmorais@hotmail.com'
-},{'contactType':'CELLPHONE', 'value':'+543516222059'}
-
-        ];
-
-export default function ContactForm({personalContacts}) {
+export default function ContactForm({ person: { personalContacts } }) {
 
     const { data: session, status } = useSession();
 
@@ -76,8 +62,8 @@ export default function ContactForm({personalContacts}) {
                         </Fab>
                     </Grid>
                     <Grid item xs={12} sm={12}>
-                        {userContacts ?
-                            userContacts.map(
+                        {personalContacts ?
+                            personalContacts.map(
                             (contact) => (
                                 getContactCard(contact)
                             )):<></>}
@@ -137,43 +123,33 @@ export function getSocialNetworkCard(socialNetwork) {
 }
 
 function getContactIcon(contactType) {
-    console.log(contactType);
     switch (contactType) {
         case 'EMAIL':
             return(<EmailIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon EMAIL: " + contactType);
             break;
         case 'CELLPHONE':
             return(<SmartphoneIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon CELLPHONE: " + contactType);
             break;
         case 'PHONE':
             return(<PhoneIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon PHONE: " + contactType);
             break;
         case 'FACEBOOK':
             return(<FacebookIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon PHONE: " + contactType);
             break;
         case 'LINKEDIN':
             return(<LinkedInIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon PHONE: " + contactType);
             break;
         case 'INSTAGRAM':
             return(<InstagramIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon PHONE: " + contactType);
             break;
         case 'TWEETER':
             return(<TwitterIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon PHONE: " + contactType);
             break;
         case 'YOUTUBE':
             return(<YouTubeIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon PHONE: " + contactType);
             break;
         default:
             return(<ContactlessIcon color="disabled" sx={{ height: 50, width: 50 }}/>);
-            console.log("getContactIcon OTHER: " + contactType);
             break;
     }
 }
