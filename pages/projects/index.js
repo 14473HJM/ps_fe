@@ -41,28 +41,28 @@ export default function Projects({projects}) {
                     <ListItem sx={{maxWidth:1/3, minWidth:1/3}}>
                         <ListItemText primary="Estudiantes"
                                       secondary={
-                                          <AvatarGroup max={3} sx={{maxWidth:1/3}}>
+                                          <AvatarGroup max={3} sx={{maxWidth:1/3}} spacing={'small'}>
                                               {project.students.map(s =>
-                                                  <Avatar key={s.id} alt={s.name + ' ' + s.lastName} src={s.imageProfile} href={"/users/" + s.id} />
+                                                  <Avatar key={s.id} alt={s.name + ' ' + s.lastName} src={s.imageProfile} component="a" href={"/users/" + s.id} />
                                               )}
                                           </AvatarGroup>
                                       } sx={{maxWidth:1/3}} />
                         <ListItemText primary="Tutor"
                                       secondary={project.tutor ?
-                                          <Avatar key={project.tutor.id} alt={project.tutor.name + ' ' + project.tutor.lastName} src={project.tutor.imageProfile} href={"/users/" + project.tutor.id}/>
+                                          <Avatar key={project.tutor.id} alt={project.tutor.name + ' ' + project.tutor.lastName} component="a" src={project.tutor.imageProfile} href={"/users/" + project.tutor.id}/>
                                           :
                                           <Tooltip title="Proyecto sin Tutor asignado" placement="top-start">
-                                              <Fab size={'small'} onClick={handleAddTutor}>
+                                              <Fab size={'small'} onClick={handleAddTutor} sx={{boxShadow:'none'}}>
                                                   <PersonOffIcon/>
                                               </Fab>
                                           </Tooltip>
                                       } sx={{maxWidth:1/3,}}/>
                         <ListItemText primary="Observadores"
                                       secondary={
-                                          <AvatarGroup max={3} sx={{maxWidth:1/3}}>
+                                          <AvatarGroup max={3} sx={{maxWidth:1/3}} spacing={'small'}>
                                               {project.observers.length > 0 ?
                                                   project.observers.map(s =>
-                                                      <Avatar key={s.id} alt={s.name + ' ' + s.lastName} src={s.imageProfile} href={"/users/" + s.id} />
+                                                      <Avatar key={s.id} alt={s.name + ' ' + s.lastName} component="a" src={s.imageProfile} href={"/users/" + s.id} sx={{bgcolor:'white'}}/>
                                                   ) :
                                                   <Tooltip title="Proyecto sin Observadores extras" placement="top-start">
                                                       <Avatar><PersonOffIcon/></Avatar>
