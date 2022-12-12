@@ -273,8 +273,9 @@ export default function Projects({projects, _professors}) {
 Projects.auth = true;
 
 export async function getServerSideProps(context) {
+
     const props = await getProjects(context);
-    const projects = props.props.projects;
+    const projects = props.props.projects ? props.props.projects : props.props;
     const _professors = await getProfessors(context);
-    return {props: { projects, _professors}};
+    return {props: {projects, _professors}};
 }

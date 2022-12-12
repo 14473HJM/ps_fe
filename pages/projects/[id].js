@@ -515,7 +515,8 @@ export async function getServerSideProps(context) {
         const res = await fetch(`http://localhost:8080/ps/projects/${params.id}`, options)
         _project = await res.json();
         // Pass data to the page via props
-    } else if(token != null) {
+    }
+    if(token != null) {
         const {access_token} = token
         const options = {
             headers: {

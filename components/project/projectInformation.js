@@ -30,6 +30,15 @@ export default function ProjectInformation(props) {
     const [scopes, setScopes] = React.useState((props.project && props.project.scopes) || []);
     const [scopetoEdit, setScopetoEdit] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects', body);
+    const [isValidToSave, setIsValidToSave] = React.useState(true);
+    const [formValidation, setFormValidation]= React.useState({name: project.name || null,
+        description: project.description || null,
+        objective:project.objective || null,
+        projectLimit:project.projectLimit || null,
+        projectType:project.projectType || null,
+        isRealProject:project.isRealProject || null,
+        imageLink:project.imageLink || null,
+        scopes:project.scopes || null});
     const router = useRouter()
 
     const handleSubmit = (e) => {
@@ -107,6 +116,35 @@ export default function ProjectInformation(props) {
         if (error) alert('Error');
     }, [data, error])
 
+    React.useEffect(() => {handleCheckValidToSave()
+    }, [formValidation])
+
+
+    const handleCheckValidToSave = (event) => {
+        if(event) {
+            event.preventDefault();
+            console.log('event: ', event);
+            const field = event.target.name;
+            setFormValidation({...formValidation, [field]: event.target.value})
+            if (formValidation.name && formValidation.description &&
+                formValidation.objective && formValidation.projectLimit &&
+                scopes.length > 0) {
+                setIsValidToSave(false);
+            } else {
+                setIsValidToSave(true);
+            }
+            console.log('EVENT ON FORM: ', formValidation)
+        } else {
+            if (formValidation.name != null && formValidation.description != null &&
+                formValidation.objective != null && formValidation.projectLimit != null &&
+                scopes.length > 0) {
+                setIsValidToSave(false);
+            } else {
+                setIsValidToSave(true);
+            }
+        }
+    }
+
     return (
         <React.Fragment>
             <Box component="form"
@@ -114,6 +152,7 @@ export default function ProjectInformation(props) {
                 alignItems="center"
                 disabled={isDisabled}
                 onSubmit={handleSubmit}
+                 onChange={handleCheckValidToSave}
             >
                 <Grid container spacing={1}>
                     <Grid item xs={12} sm={12}>
@@ -287,6 +326,7 @@ export default function ProjectInformation(props) {
                             required
                             defaultValue={project.projectType ? project.projectType : null}
                             disabled={isDisabled}
+                            onChange={handleCheckValidToSave}
                         >
                             <MenuItem value="WEB">Web</MenuItem>
                             <MenuItem value="MOBILE">Mobile</MenuItem>
@@ -326,8 +366,8 @@ export default function ProjectInformation(props) {
                         variant="contained"
                         sx={{ mt: 3, ml: 1 }}
                         type={"submit"}
-                        disabled={isDisabled}
-                    >Enviar</Button>
+                        disabled={isValidToSave}
+                    >Guardar Datos</Button>
                 </Box>
             </Box>
         </React.Fragment>
