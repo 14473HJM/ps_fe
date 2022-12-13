@@ -12,6 +12,12 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Collapse from "@mui/material/Collapse";
 import {isValidToNext, messageValidation} from "./projectValidations";
+import {moveProject} from "../../pages/api/projects/projectsApi";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import Modal from "@mui/material/Modal";
+import {MessageModalSimple} from "../common/messages/message";
 
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
@@ -89,22 +95,22 @@ const currentStep = (projectStatus) => {
                 return 3;
                 break;
             case "WIP":
-                return 3;
-                break;
-            case "UNDER_FINAL_REVIEW":
                 return 4;
                 break;
-            case "READY_TO_DELIVER":
+            case "UNDER_FINAL_REVIEW":
                 return 5;
                 break;
-            case "DELIVERED":
+            case "READY_TO_DELIVER":
                 return 6;
                 break;
-            case "FINISHED":
+            case "DELIVERED":
                 return 7;
                 break;
+            case "FINISHED":
+                return 8;
+                break;
             case "CANCELED":
-                return 7;
+                return 9;
                 break;
             default:
                 return 0;
@@ -227,7 +233,7 @@ const alertErrorMessage = () => {
 
 }
 
-export default function ProjectStepper({project}) {
+export default function ProjectStepper({project, setProject}) {
 
     const [activeStep, setActiveStep] = React.useState(currentStep(project.projectStatus));
     const { data: session } = useSession();
@@ -241,17 +247,36 @@ export default function ProjectStepper({project}) {
     const [alertErrorTitle, setAlertErrorTitle] = React.useState(messageValidation(project).title);
     const [alertErrorDescription, setAlertErrorDescription] = React.useState(messageValidation(project).description);
     const [alertErrorFields, setAlertErrorFields] = React.useState(messageValidation(project).fields);
+    const [title, setTitle] = React.useState('');
+    const [description, setDescription] = React.useState();
+    const [modalStatus, setModalStatus] = React.useState(false);
+    const [action, setAction] = React.useState('');
 
-    const handleNext = () => {
+    const handleNext = async (event) => {
         console.log("Next")
+        event.preventDefault();
+        setAction('MOVE_ON');
+        setTitle("¿Seguro que desea avanzar de etapa?");
+        setDescription("Deje un mensaje con el detalle de su pedido.");
+        setModalStatus(true);
     };
 
-    const handleBack = () => {
+    const handleBack = async (event) => {
         console.log("Back")
+        event.preventDefault();
+        setAction('MOVE_BACK');
+        setTitle("¿Seguro que desea retroceder de etapa?");
+        setDescription("Deje un mensaje con la justificación para esta acción.");
+        setModalStatus(true);
     };
 
-    const handleCancel = () => {
+    const handleCancel = async (event) => {
         console.log("Cancel")
+        event.preventDefault();
+        setAction('CANCEL');
+        setTitle("¿Seguro que desea cancelar la PS?");
+        setDescription("Esta acción no tiene vuelta atras. Por favor deje un mensaje con el detalle de esta acción.");
+        setModalStatus(true);
     };
 
     console.log(disableNextAction);
@@ -277,24 +302,6 @@ export default function ProjectStepper({project}) {
                     <strong>check it out!</strong>
                 </Alert>
             </Collapse>
-            {/*<Collapse in={alertErrorVisible} sx={{mt:1}}>*/}
-            {/*    <Alert severity="warning">*/}
-            {/*        <AlertTitle>Warning</AlertTitle>*/}
-            {/*        This is a warning alert — <strong>check it out!</strong>*/}
-            {/*    </Alert>*/}
-            {/*</Collapse>*/}
-            {/*<Collapse in={alertErrorVisible} sx={{mt:1}}>*/}
-            {/*    <Alert severity="info">*/}
-            {/*        <AlertTitle>Info</AlertTitle>*/}
-            {/*        This is an info alert — <strong>check it out!</strong>*/}
-            {/*    </Alert>*/}
-            {/*</Collapse>*/}
-            {/*<Collapse in={alertErrorVisible} sx={{mt:1}}>*/}
-            {/*    <Alert severity="success">*/}
-            {/*        <AlertTitle>Success</AlertTitle>*/}
-            {/*        This is a success alert — <strong>check it out!</strong>*/}
-            {/*    </Alert>*/}
-            {/*</Collapse>*/}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} >
                 {!visibleCancelAction ?
                 <Button
@@ -317,6 +324,14 @@ export default function ProjectStepper({project}) {
                     color="success"
                 >{nextName}</Button> : null }
             </Box>
+            <MessageModalSimple
+                title={title}
+                description={description}
+                modalStatus={modalStatus}
+                setModalStatus={setModalStatus}
+                project={project}
+                setProject={setProject}
+                action={action}/>
         </Box>
     );
 }

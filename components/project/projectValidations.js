@@ -92,15 +92,15 @@ export const messageValidation = (project) => {
     } else {
         switch (project.projectStatus) {
             case "CREATED":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 return message;
                 break;
             case "UNDER_PROP_REVIEW":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 return message;
                 break;
             case "PROP_ACCEPTED":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 if(!project.issueTracker) {
                     message.fields.push('Seguimiento del proyecto');
                 }
@@ -110,7 +110,7 @@ export const messageValidation = (project) => {
                 return message;
                 break;
             case "WIP":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 if(!project.issueTracker) {
                     message.fields.push('Seguimiento del proyecto');
                 }
@@ -120,7 +120,7 @@ export const messageValidation = (project) => {
                 return message;
                 break;
             case "UNDER_FINAL_REVIEW":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 if(!project.issueTracker) {
                     message.fields.push('Seguimiento del proyecto');
                 }
@@ -130,7 +130,7 @@ export const messageValidation = (project) => {
                 return message;
                 break;
             case "READY_TO_DELIVER":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 if(!project.issueTracker) {
                     message.fields.push('Seguimiento del proyecto');
                 }
@@ -143,7 +143,7 @@ export const messageValidation = (project) => {
                 return message;
                 break;
             case "DELIVERED":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 if(!project.issueTracker) {
                     message.fields.push('Seguimiento del proyecto');
                 }
@@ -159,7 +159,7 @@ export const messageValidation = (project) => {
                 return message;
                 break;
             case "FINISHED":
-                createdMessageValidation(message);
+                createdMessageValidation(project,message);
                 if(!project.issueTracker) {
                     message.fields.push('Seguimiento del proyecto');
                 }
@@ -184,7 +184,7 @@ export const messageValidation = (project) => {
     }
 }
 
-const createdMessageValidation = (message) => {
+const createdMessageValidation = (project, message) => {
     if(!project.name) {
         message.fields.push('Nombre del proyecto');
     }

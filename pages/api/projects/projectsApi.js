@@ -72,7 +72,7 @@ export const moveProject = async (session, project, comment, action) => {
         return null;
     } else {
         const options = {
-            method: 'POST',
+            method: 'PUT',
             headers: myHeaders,
             cache: 'default',
             body: JSON.stringify(comment),

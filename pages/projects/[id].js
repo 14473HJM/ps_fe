@@ -13,6 +13,9 @@ import ProjectValuation from "../../components/project/projectValuation";
 import {getToken} from "next-auth/jwt";
 import ProjectStepper from "../../components/project/projectStepper";
 import { getProjectById } from '../../services/projects.service';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import {MessageModalSimple} from "../../components/common/messages/message";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -439,6 +442,9 @@ const handleDisabled = (session, project) => {
             );
         }
 };
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function BasicTabs(props) {
     const {data: session, status} = useSession()
@@ -446,16 +452,39 @@ export default function BasicTabs(props) {
     const [project, setProject] = React.useState(props._project);
     const [availableInternetPlatforms, setAvailableInternetPlatforms] = React.useState(props._availableInternetPlatforms);
     const [infSegDis, setInfSegDis] = React.useState(handleDisabled(session, project));
+    const [openSnackbarOK, setOpenSnackbarOK] = React.useState(false);
+    const [openSnackbarError, setOpenSnackbarError] = React.useState(false);
 
     console.log(props);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
+    // const handleOpenSnackbar = (t) => {
+    //     if(t === "E") {
+    //         setOpenSnackbarError(true);
+    //     } else if (t === "S") {
+    //         setOpenSnackbarOK(true);
+    //     }
+    // };
+    // const handleCloseSnackbar = (event, reason, t) => {
+    //     if(t === "E") {
+    //         if (reason === 'clickaway') {
+    //             return;
+    //         }
+    //         setOpenSnackbarError(false);
+    //     } else if (t === "S") {
+    //         if (reason === 'clickaway') {
+    //             return;
+    //         }
+    //         setOpenSnackbarOK(false);
+    //     }
+    // };
+
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ width: '100%', mb: 6}}>
-                <ProjectStepper project={project} />
+                <ProjectStepper project={project} setProject={setProject} />
             </Box>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
@@ -485,6 +514,27 @@ export default function BasicTabs(props) {
             <TabPanel value={value} index={5}>
                 <ProjectValuation project={project} setProject={setProject} isDisabled={infSegDis.evalDisable}/>
             </TabPanel>
+
+            {/*<Snackbar*/}
+            {/*    open={openSnackbarOK}*/}
+            {/*    autoHideDuration={6000}*/}
+            {/*    onClose={(e, r) => handleCloseSnackbar(e, r, 'S')}*/}
+            {/*    anchorOrigin={{vertical: 'bottom', horizontal: 'bottom'}}*/}
+            {/*>*/}
+            {/*    <Alert onClose={(e, r) => handleCloseSnackbar(e, r, 'S')} severity="success" sx={{ width: '100%' }}>*/}
+            {/*        Operación realizada con exito!*/}
+            {/*    </Alert>*/}
+            {/*</Snackbar>*/}
+            {/*<Snackbar*/}
+            {/*    open={openSnackbarError}*/}
+            {/*    autoHideDuration={6000}*/}
+            {/*    onClose={(e, r) => handleCloseSnackbar(e, r, 'E')}*/}
+            {/*    anchorOrigin={{vertical: 'bottom', horizontal: 'bottom'}}*/}
+            {/*>*/}
+            {/*    <Alert onClose={(e, r) => handleCloseSnackbar(e, r, 'E')} severity="error" sx={{ width: '100%' }}>*/}
+            {/*        Hubo un error al procesar la operación*/}
+            {/*    </Alert>*/}
+            {/*</Snackbar>*/}
         </Box>
     );
 }

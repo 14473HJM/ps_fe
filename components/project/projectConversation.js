@@ -61,7 +61,12 @@ export default function ProjectConversation(props) {
     const handleSendMessage = async (event) => {
         event.preventDefault();
         const comment = {
-            commentator: user.person,
+            commentator: {
+                id: user.person.id,
+                objectType: user.person.objectType,
+                name: user.person.name,
+                lastName: user.person.lastName,
+                imageProfile: user.person.imageProfile},
             comment: event.target.message.value,
             createdDate: new Date(),
         };
