@@ -169,6 +169,7 @@ export default function ProjectInformation(props) {
                             name="name"
                             fullWidth
                             autoComplete="name"
+                            inputProps={{maxlength: 100}}
                             defaultValue={project.name ? project.name : null}
                             disabled={isDisabled}
                         />
@@ -187,6 +188,7 @@ export default function ProjectInformation(props) {
                             autoComplete="description"
                             multiline
                             rows={2}
+                            inputProps={{maxlength: 250}}
                             defaultValue={project.description ? project.description : null}
                             disabled={isDisabled}
                         />
@@ -205,6 +207,7 @@ export default function ProjectInformation(props) {
                             autoComplete="objective"
                             multiline
                             rows={4}
+                            inputProps={{maxlength: 1000}}
                             defaultValue={project.objective ? project.objective : null}
                             disabled={isDisabled}
                         />
@@ -223,6 +226,7 @@ export default function ProjectInformation(props) {
                             autoComplete="projectLimit"
                             multiline
                             rows={3}
+                            inputProps={{maxlength: 1000}}
                             defaultValue={project.projectLimit ? project.projectLimit : null}
                             disabled={isDisabled}
                         />
@@ -263,6 +267,7 @@ export default function ProjectInformation(props) {
                                                                 <CloseIcon />
                                                             </IconButton>
                                                         </InputAdornment>,
+                                                        maxlength: 250
                                                     }}
                                                 />
                                             </ListItem>
@@ -302,6 +307,7 @@ export default function ProjectInformation(props) {
                                     autoComplete="scope"
                                     value={currentScope}
                                     disabled={isDisabled}
+                                    inputProps={{maxlength: 250}}
                                     onChange={handleScopeChange}
                                 />
                             </Grid>
@@ -312,12 +318,34 @@ export default function ProjectInformation(props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    <Grid item xs={12} sm={7}>
+                        <Typography variant="h6" gutterBottom>
+                            Tema del proyecto
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
                         <Typography variant="h6" gutterBottom>
                             Tipo de proyecto
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={4} >
+                    <Grid item xs={12} sm={2}>
+
+                    </Grid>
+                    <Grid item xs={12} sm={7}>
+                        <TextField
+                            required
+                            requiredMessage="This field is required."
+                            errorTarget="under"
+                            id="projectTheme"
+                            name="projectTheme"
+                            fullWidth
+                            autoComplete="projectTheme"
+                            inputProps={{maxlength: 250}}
+                            defaultValue={project.imageLink ? project.imageLink : null}
+                            disabled={isDisabled}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={2} >
                         <Select
                             labelId="projectType"
                             id="projectType"
@@ -326,6 +354,7 @@ export default function ProjectInformation(props) {
                             required
                             defaultValue={project.projectType ? project.projectType : null}
                             disabled={isDisabled}
+                            inputProps={{maxlength: 100}}
                             onChange={handleCheckValidToSave}
                         >
                             <MenuItem value="WEB">Web</MenuItem>
@@ -333,13 +362,10 @@ export default function ProjectInformation(props) {
                             <MenuItem value="WEB_MOBILE">Web & Mobile</MenuItem>
                         </Select>
                     </Grid>
-                    <Grid item xs={12} sm={4} ml={8}>
+                    <Grid item xs={12} sm={2} ml={4} mt={0.8}>
                         <FormControlLabel control={
                             <Checkbox disabled={isDisabled} name="isRealProject" />
                         } label="Es un proyecto real" />
-                    </Grid>
-                    <Grid item xs={12} sm={4} ml={8}>
-
                     </Grid>
                     <Grid item xs={12} sm={12}>
                         <Typography variant="h6" gutterBottom>
@@ -356,6 +382,7 @@ export default function ProjectInformation(props) {
                             label="Link"
                             fullWidth
                             autoComplete="imageLink"
+                            inputProps={{maxlength: 250}}
                             defaultValue={project.imageLink ? project.imageLink : null}
                             disabled={isDisabled}
                         />

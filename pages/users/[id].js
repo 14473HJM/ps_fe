@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Image from "next/image";
 
-export default function Dashboard(props) {
+export default function User(props) {
 
     const [project, setProject]  = React.useState(props.project);
     console.log(props);
@@ -9,4 +9,4 @@ export default function Dashboard(props) {
 
 }
 
-Dashboard.auth = true;
+User.auth = true;
