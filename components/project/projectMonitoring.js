@@ -15,8 +15,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+import LoadingButton from '@mui/lab/LoadingButton';
 import Divider from "@mui/material/Divider";
 import { useSession } from "next-auth/react";
+import usePut from '../../hooks/usePut';
 
 export default function ProjectMonitoring(props) {
 
@@ -39,9 +41,16 @@ export default function ProjectMonitoring(props) {
     });
     const [internetPlatforms, setInternetPlatforms] = React.useState(props.availableInternetPlatforms);
     const [enableSaveButton, setEnableSaveButton] = React.useState(false);
+    const [body, setBody] = React.useState(null);
+    const { data, error, loading } = usePut('/api/projects', body);
 
-    const handleSubmit = (event) => {
-
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setBody({
+            ...project,
+            codeRepositories: repositories,
+            issueTracker,
+        })
     }
     const handleAddRepository = () => {
         setRepositories([
@@ -74,7 +83,7 @@ export default function ProjectMonitoring(props) {
         const field = event.target.name;
         setCurrentRepository({
             ...currentRepository,
-            [field]: value,
+            [field]: field === 'internetPlatform' ? internetPlatforms[value] : value,
         });
     }
     const handleIssueTrackerInternetPlatformChanges = (event) => {
@@ -95,6 +104,12 @@ export default function ProjectMonitoring(props) {
         console.log('REPOSITORIES: ', repositoriesAreValid)
         setEnableSaveButton(issueTrackerIsValid && repositoriesAreValid);
     }, [issueTracker, repositories])
+
+    React.useEffect(() => {
+        setBody(null);
+        if (data) router.push('/projects');
+        if (error) alert('Error');
+    }, [data, error])
 
     return (
         <React.Fragment>
@@ -228,7 +243,7 @@ export default function ProjectMonitoring(props) {
 
                                     >
                                         <Grid container item xs={12} sm={12} columnSpacing={13.5}>
-                                            <Grid item sm={2}>{internetPlatforms[repo.internetPlatform].name}</Grid>
+                                            <Grid item sm={2}>{repo.internetPlatform.name}</Grid>
                                             <Grid item sm={2}>{repo.ownerName}</Grid>
                                             <Grid item sm={5}><Link href={repo.repositoryLink} targproductionBranchNameet="_blank">{repo.repositoryLink}</Link></Grid>
                                             <Grid item sm={2}>{repo.productionBranchName}</Grid>
@@ -252,7 +267,7 @@ export default function ProjectMonitoring(props) {
                             required
                             disabled={isDisabled}
                             onChange={handleRepositoryChanges}
-                            value={currentRepository.internetPlatform}
+                            value={currentRepository.internetPlatform.id}
                         >
                             {internetPlatforms ? internetPlatforms.map((i, index) =>
                                 i.type == "REPOSITORY" ?
@@ -307,12 +322,13 @@ export default function ProjectMonitoring(props) {
                 </Grid>
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} >
-                    <Button
+                    <LoadingButton
+                        loading={loading}
                         variant="contained"
                         sx={{ mt: 3, ml: 1 }}
                         type={"submit"}
                         disabled={isDisabled || !enableSaveButton}
-                    >Guardar</Button>
+                    >Guardar</LoadingButton>
                 </Box>
             </Box>
 
