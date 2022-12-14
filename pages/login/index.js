@@ -5,10 +5,12 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getCsrfToken, signIn } from "next-auth/react"
 import { Copyright, LogoCard } from "../../components/brand/copyright";
+import Soon from '../../components/common/soon';
 
 const theme = createTheme();
 
@@ -74,14 +76,18 @@ export default function Login({ csrfToken }) {
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
+                                <Tooltip title={<Soon />} arrow>
+                                    <Link href="#" variant="body2">
+                                        Forgot password?
+                                    </Link>
+                                </Tooltip>
                             </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
-                                    {"Don't have an account? Request it!"}
-                                </Link>
+                                <Tooltip title={<Soon />} arrow>
+                                    <Link href="#" variant="body2">
+                                        {"Don't have an account? Request it!"}
+                                    </Link>
+                                </Tooltip>
                             </Grid>
                         </Grid>
                     </Box>
