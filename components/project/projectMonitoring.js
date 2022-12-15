@@ -6,15 +6,11 @@ import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import IconButton from "@mui/material/IconButton";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from '@mui/icons-material/Edit';
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Divider from "@mui/material/Divider";
 import { useSession } from "next-auth/react";
@@ -26,15 +22,15 @@ export default function ProjectMonitoring(props) {
 
     const [project, setProject] = React.useState(props.project);
     const [isDisabled, setIsDisabled] = React.useState(props.isDisabled);
-    const [repositories, setRepositories] = React.useState([]);
+    const [repositories, setRepositories] = React.useState(props.project.codeRepositories);
     const [currentRepository, setCurrentRepository] = React.useState({
-        internetPlatform: '',
+        internetPlatform: { id: '' },
         ownerName: '',
         repositoryLink: '',
         productionBranchName: '',
     });
     const [issueTracker, setIssueTracker] = React.useState({
-        internetPlatform: '',
+        internetPlatform: { id: '' },
         projectLink: '',
         projectName: '',
         ownerName: '',
@@ -57,7 +53,7 @@ export default function ProjectMonitoring(props) {
             ...repositories, currentRepository,
         ]);
         setCurrentRepository({
-            internetPlatform: '',
+            internetPlatform: { id: '' },
             ownerName: '',
             repositoryLink: '',
             productionBranchName: '',
@@ -65,7 +61,7 @@ export default function ProjectMonitoring(props) {
     }
     const handleDeleteRepository = index => {
         const newRepositories = [...repositories];
-        newRepositories.splice(index, 1);
+        newRepositories[index].recordStatus = 'deleted';
         setRepositories(newRepositories);
     }
     const handleIssueTrackerChanges = (event) => {
@@ -83,7 +79,7 @@ export default function ProjectMonitoring(props) {
         const field = event.target.name;
         setCurrentRepository({
             ...currentRepository,
-            [field]: field === 'internetPlatform' ? internetPlatforms[value] : value,
+            [field]: field === 'internetPlatform' ? internetPlatforms[value - 1] : value,
         });
     }
     const handleIssueTrackerInternetPlatformChanges = (event) => {
@@ -236,25 +232,29 @@ export default function ProjectMonitoring(props) {
                     {repositories.length > 0 &&
                         <Grid item xs={12} sm={12}>
                             <List>
-                                {repositories.map((repo, i) => (
-                                    <ListItem
-                                        key={`${repo.internetPlatform}-${i}-list-item`}
-                                        sx={{ pr: 0 }}
+                                {repositories.map((repo, i) => {
+                                    if (repo.recordStatus !== 'deleted') {
+                                        return (
+                                            <ListItem
+                                                key={`${repo.internetPlatform}-${i}-list-item`}
+                                                sx={{ pr: 0 }}
 
-                                    >
-                                        <Grid container item xs={12} sm={12} columnSpacing={13.5}>
-                                            <Grid item sm={2}>{repo.internetPlatform.name}</Grid>
-                                            <Grid item sm={2}>{repo.ownerName}</Grid>
-                                            <Grid item sm={5}><Link href={repo.repositoryLink} targproductionBranchNameet="_blank">{repo.repositoryLink}</Link></Grid>
-                                            <Grid item sm={2}>{repo.productionBranchName}</Grid>
-                                        </Grid>
-                                        <Grid item xs={12} sm={1} alignItems="center" textAlign={"center"} paddingRight={'22px'}>
-                                            <Fab color="error" aria-label="add" size="small" onClick={() => handleDeleteRepository(i)} >
-                                                <DeleteIcon />
-                                            </Fab>
-                                        </Grid>
-                                    </ListItem>
-                                ))}
+                                            >
+                                                <Grid container item xs={12} sm={12} columnSpacing={13.5}>
+                                                    <Grid item sm={2}>{repo.internetPlatform.name}</Grid>
+                                                    <Grid item sm={2}>{repo.ownerName}</Grid>
+                                                    <Grid item sm={5}><Link href={repo.repositoryLink} targproductionBranchNameet="_blank">{repo.repositoryLink}</Link></Grid>
+                                                    <Grid item sm={2}>{repo.productionBranchName}</Grid>
+                                                </Grid>
+                                                <Grid item xs={12} sm={1} alignItems="center" textAlign={"center"} paddingRight={'22px'}>
+                                                    <Fab color="error" aria-label="add" size="small" onClick={() => handleDeleteRepository(i)} >
+                                                        <DeleteIcon />
+                                                    </Fab>
+                                                </Grid>
+                                            </ListItem>
+                                        )
+                                    }
+                                })}
                             </List>
                         </Grid>
                     }
@@ -271,7 +271,7 @@ export default function ProjectMonitoring(props) {
                         >
                             {internetPlatforms ? internetPlatforms.map((i, index) =>
                                 i.type == "REPOSITORY" ?
-                                    <MenuItem id={index} key={i.id} value={index}>{i.name}</MenuItem> : null
+                                    <MenuItem id={index} key={i.id} value={i.id}>{i.name}</MenuItem> : null
                             ) : <MenuItem id={-1} value="None">No disponible</MenuItem>
                             }
                         </Select>
