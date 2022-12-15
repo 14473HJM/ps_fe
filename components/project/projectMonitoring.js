@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Divider from "@mui/material/Divider";
 import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router'
 import usePut from '../../hooks/usePut';
 
 export default function ProjectMonitoring(props) {
@@ -39,11 +40,15 @@ export default function ProjectMonitoring(props) {
     const [enableSaveButton, setEnableSaveButton] = React.useState(false);
     const [body, setBody] = React.useState(null);
     const { data, error, loading } = usePut('/api/projects', body);
+    const router = useRouter()
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setBody({
             ...project,
+            students: project.students.map(student => ({ id: student.id, objectType: student.objectType })),
+            tutor: { id: project.tutor.id, objectType: project.tutor.objectType },
+            conversation: { id: project.conversation.id, objectType: project.conversation.objectType },
             codeRepositories: repositories,
             issueTracker,
         })
@@ -84,7 +89,7 @@ export default function ProjectMonitoring(props) {
     }
     const handleIssueTrackerInternetPlatformChanges = (event) => {
         event.preventDefault();
-        const internetPlatform = internetPlatforms[event.target.value];
+        const internetPlatform = internetPlatforms[event.target.value - 1];
         setIssueTracker({
             ...issueTracker,
             ['internetPlatform']: internetPlatform,
@@ -139,12 +144,12 @@ export default function ProjectMonitoring(props) {
                             fullWidth
                             required
                             onChange={handleIssueTrackerInternetPlatformChanges}
-                            defaultValue={project.issueTracker ? project.issueTracker.internetPlatform.name : null}
+                            defaultValue={project.issueTracker ? project.issueTracker.internetPlatform.id : null}
                             disabled={isDisabled}
                         >
                             {internetPlatforms ? internetPlatforms.map((i, index) =>
                                 i.type == "ISSUE_TRACKER" ?
-                                    <MenuItem id={index} key={i.id} value={index}>{i.name}</MenuItem> : null
+                                    <MenuItem id={index} key={i.id} value={i.id}>{i.name}</MenuItem> : null
                             ) : <MenuItem id={-1} value="None">No disponible</MenuItem>
                             }
                         </Select>
