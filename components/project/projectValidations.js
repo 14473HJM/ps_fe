@@ -23,7 +23,8 @@ export const isValidToNext = (project) => {
                 if(project.name && project.description && project.objective &&
                     project.projectLimit && project.scopes.length > 0 && project.projectType
                     && project.projectTheme && project.tutor && project.issueTracker
-                    && project.codeRepositories.length > 0) {
+                    && project.codeRepositories.length > 0
+                    && !project.codeRepositories.every(repo => repo.recordStatus === 'deleted')) {
                     return true;
                 }
                 break;
@@ -104,7 +105,7 @@ export const messageValidation = (project) => {
                 if(!project.issueTracker) {
                     message.fields.push('Seguimiento del proyecto');
                 }
-                if(!project.codeRepositories.length > 0) {
+                if (!project.codeRepositories.length > 0 || project.codeRepositories.every(repo => repo.recordStatus === 'deleted')) {
                     message.fields.push('Repositorios de código');
                 }
                 return message;

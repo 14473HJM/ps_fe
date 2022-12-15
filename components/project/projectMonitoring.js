@@ -30,7 +30,7 @@ export default function ProjectMonitoring(props) {
         repositoryLink: '',
         productionBranchName: '',
     });
-    const [issueTracker, setIssueTracker] = React.useState({
+    const [issueTracker, setIssueTracker] = React.useState(project.issueTracker || {
         internetPlatform: { id: '' },
         projectLink: '',
         projectName: '',
@@ -66,7 +66,12 @@ export default function ProjectMonitoring(props) {
     }
     const handleDeleteRepository = index => {
         const newRepositories = [...repositories];
-        newRepositories[index].recordStatus = 'deleted';
+        const { recordStatus } = newRepositories[index];
+        if (recordStatus === undefined) {
+            newRepositories.splice(index, 1);
+        } else {
+            newRepositories[index].recordStatus = 'deleted';
+        }
         setRepositories(newRepositories);
     }
     const handleIssueTrackerChanges = (event) => {
@@ -97,12 +102,19 @@ export default function ProjectMonitoring(props) {
     }
 
     React.useEffect(() => {
-        const issueTrackerIsValid = Object.keys(issueTracker).every(key => !!issueTracker[key] === true);
-        const repositoriesAreValid = repositories.length > 0 && repositories.every(repo => {
-            return Object.keys(repo).every(key => !!repo[key] === true);
+        const issueTrackerFieldsToValidate = ['internetPlatform', 'ownerName', 'projectLink', 'projectName'];
+        const issueTrackerIsValid = issueTrackerFieldsToValidate.every(key => !!issueTracker[key] === true);
+
+        const repositoriesFieldsToValidate = ['internetPlatform', 'ownerName', 'repositoryLink', 'productionBranchName'];
+        const repositoriesAreValid = repositories.length > 0
+            && !repositories.every(repo => repo.recordStatus === 'deleted')
+            && repositories.every(repo => {
+                return repositoriesFieldsToValidate.every(key => !!repo[key] === true);
         });
+
         console.log('ISSUE TRACKER: ', issueTrackerIsValid)
         console.log('REPOSITORIES: ', repositoriesAreValid)
+
         setEnableSaveButton(issueTrackerIsValid && repositoriesAreValid);
     }, [issueTracker, repositories])
 
