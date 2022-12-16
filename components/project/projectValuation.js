@@ -79,6 +79,7 @@ export default function ProjectValuation(props) {
                                     fullWidth
                                     autoComplete="productDevelopmentNote"
                                     type="number"
+                                    inputProps={{ min: 0, max: 10 }}
                                     size="small"
                                     disabled={isDisabled}
                                     value={form.productDevelopmentNote}
@@ -103,6 +104,7 @@ export default function ProjectValuation(props) {
                                     fullWidth
                                     autoComplete="finalNote"
                                     type="number"
+                                    inputProps={{ min: 0, max: 10 }}
                                     size="small"
                                     disabled={isDisabled}
                                     value={form.finalNote}
