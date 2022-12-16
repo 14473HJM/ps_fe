@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Image from "next/image";
+import Soon from '../../components/common/soon';
+
 
 export default function User(props) {
 
-    const [project, setProject]  = React.useState(props.project);
     console.log(props);
-    return("Proximamente!!!");
+    return(<Soon />);
 
 }
 

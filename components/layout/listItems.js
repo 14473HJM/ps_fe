@@ -121,28 +121,48 @@ export const mainStudentListItems = (
     </React.Fragment>
 );
 
-export const secondaryListItems = (
+export const adminSecondaryListItems = (
     <React.Fragment>
         <ListSubheader component="div" inset>
             Reportes
         </ListSubheader>
-        <ListItemButton>
+        <ListItemButton href='/reports/users'>
             <ListItemIcon>
                 <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Current month" />
+            <ListItemText primary="Usuarios" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton href='/reports/projects'>
             <ListItemIcon>
                 <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Last quarter" />
+            <ListItemText primary="Projectos" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton href='/reports/invitations'>
             <ListItemIcon>
                 <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Year-end sale" />
+            <ListItemText primary="Invitaciones" />
+        </ListItemButton>
+    </React.Fragment>
+);
+
+export const professorSecondaryListItems = (
+    <React.Fragment>
+        <ListSubheader component="div" inset>
+            Reportes
+        </ListSubheader>
+        <ListItemButton href='/reports/projects'>
+            <ListItemIcon>
+                <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Projectos" />
+        </ListItemButton>
+        <ListItemButton href='/reports/invitations'>
+            <ListItemIcon>
+                <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Invitaciones" />
         </ListItemButton>
     </React.Fragment>
 );

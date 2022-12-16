@@ -13,21 +13,52 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {mainAdminListItems, mainProfessorListItems, mainStudentListItems, secondaryListItems} from './listItems';
+import {
+    adminSecondaryListItems,
+    mainAdminListItems,
+    mainProfessorListItems,
+    mainStudentListItems, professorSecondaryListItems,
+    secondaryListItems
+} from './listItems';
 import {AppBar} from './appbar'
 import {Sidebar} from "./sidebar";
 import { StickyFooter } from "../brand/stickyFooter";
 import CardMedia from "@mui/material/CardMedia";
 import { useSession, signOut } from "next-auth/react";
 import Image from 'next/image'
+import Popover from '@mui/material/Popover';
 import psuLogoWhite from '../../public/psa_b.png'
 import psuLogoBlack from '../../public/psa_n.png'
+import NotificationCard from "../common/notifications/notifications";
 
 const mdTheme = createTheme();
 
+const notifications = [
+    {
+        type: "Proyecto",
+        title: "Nuevo Proyecto asignado",
+        body: 'Se le ha asignado el proyecto "Bar de Moe"'
+    },
+    {
+        type: "Mensaje",
+        title: "Tiene un nuevo mensaje",
+        body: 'Le han dejado un nuevo mensaje en el proyecto "Bar de Moe"'
+    },
+];
+
 export default function Layout({ children }) {
     const [open, setOpen] = React.useState(true);
-    const { data: session } = useSession()
+    const { data: session } = useSession();
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClosePopover = () => {
+        setAnchorEl(null);
+    };
+    const openPopover = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -69,11 +100,30 @@ export default function Layout({ children }) {
                                 width={150}
                             />}
                             <Box>
-                            <IconButton color="inherit" sx={{mr: 3}}>
+                            <IconButton color="inherit" sx={{mr: 3}} onClick={handleClick}>
                                 <Badge badgeContent={4} color="secondary">
                                     <NotificationsIcon />
                                 </Badge>
                             </IconButton>
+                                <Popover
+                                    id={id}
+                                    open={openPopover}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClosePopover}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
+
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                >
+                                    <NotificationCard />
+                                    <Divider />
+                                    <NotificationCard />
+                                </Popover>
                                 <IconButton color="inherit" onClick={signOut}>
                                 <LogoutIcon />
                             </IconButton>
@@ -105,7 +155,8 @@ export default function Layout({ children }) {
                         {(session && session.user.roles.includes("ADMIN")) ? mainAdminListItems :
                             (session && session.user.roles.includes("PROFESSOR")) ? mainProfessorListItems : mainStudentListItems}
                         <Divider sx={{ my: 1 }} />
-                        {secondaryListItems}
+                        {(session && session.user.roles.includes("ADMIN")) ? adminSecondaryListItems :
+                            (session && session.user.roles.includes("PROFESSOR")) ? professorSecondaryListItems : null}
                     </List>
                 </Sidebar>
                 <Box

@@ -51,6 +51,7 @@ export default function ProjectInformation(props) {
             projectType,
             isRealProject,
             imageLink,
+            projectTheme,
         } = e.target;
 
         const formData = {
@@ -61,6 +62,7 @@ export default function ProjectInformation(props) {
             projectType: projectType.value,
             isRealProject: isRealProject.checked,
             imageLink: imageLink.value,
+            projectTheme: projectTheme.value,
             scopes,
         }
 
@@ -341,7 +343,7 @@ export default function ProjectInformation(props) {
                             fullWidth
                             autoComplete="projectTheme"
                             inputProps={{maxlength: 250}}
-                            defaultValue={project.imageLink ? project.imageLink : null}
+                            defaultValue={project.projectTheme ? project.projectTheme : null}
                             disabled={isDisabled}
                         />
                     </Grid>

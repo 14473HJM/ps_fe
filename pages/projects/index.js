@@ -27,6 +27,16 @@ import {useSession} from "next-auth/react";
 import {addTutor} from "../api/projects/projectsApi";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import CheckIcon from "@mui/icons-material/Check";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
+import CancelIcon from "@mui/icons-material/Cancel";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import PreviewIcon from '@mui/icons-material/Preview';
+import CodeIcon from '@mui/icons-material/Code';
+import GradingIcon from '@mui/icons-material/Grading';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import SendTimeExtensionIcon from '@mui/icons-material/SendTimeExtension';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -99,7 +109,12 @@ export default function Projects({projects, _professors}) {
         let response;
         if(message != null) {
             const comment = {
-                commentator: user.person,
+                commentator: {
+                    id: user.person.id,
+                    objectType: user.person.objectType,
+                    name: user.person.name,
+                    lastName: user.person.lastName,
+                    imageProfile: user.person.imageProfile},
                 comment: message,
                 createdDate: new Date(),
             };
@@ -122,9 +137,51 @@ export default function Projects({projects, _professors}) {
     }
 
     const handleMessageChange = (event) => {
-        setMessage(event.target.message.value);
+        setMessage(event.target.value);
     }
 
+    const handleIcons = (status) => {
+        // console.log(status);
+        if(status === 'CREATED') {
+            return (<Fab color="success" variant="extended" size="small" aria-label="add">
+                <CheckCircleOutlineIcon sx={{ mr: 1 }} />CREADO
+            </Fab>);
+        } else if (status === 'UNDER_PROP_REVIEW') {
+            return (<Fab variant="extended" size="small" color="warning" aria-label="add">
+                <PreviewIcon sx={{ mr: 1 }} />PROPUESTA ENVIADA
+            </Fab>);
+        } else if(status === 'PROP_ACCEPTED') {
+            return (<Fab variant="extended" size="small" color="success" aria-label="add">
+                <CheckIcon sx={{ mr: 1 }} />PROPUESTA ACEPTADA
+            </Fab>);
+        } else if (status === 'WIP') {
+            return (<Fab variant="extended" size="small" color="warning" aria-label="add">
+                <CodeIcon sx={{ mr: 1 }} />EN PROGRESO
+            </Fab>);
+        } else if (status === 'UNDER_FINAL_REVIEW') {
+            return (<Fab variant="extended" size="small" color="text.secondary" aria-label="add">
+                <GradingIcon sx={{ mr: 1 }} />EN REVISION FINAL
+            </Fab>);
+        } else if (status === 'READY_TO_DELIVER') {
+            return (<Fab variant="extended" size="small" color="warning" aria-label="add">
+                <WidgetsIcon sx={{ mr: 1 }} />LISTO PARA ENTREGAR
+            </Fab>);
+        } else if (status === 'DELIVERED') {
+            return (<Fab variant="extended" size="small" color="success" aria-label="add">
+                <SendTimeExtensionIcon sx={{ mr: 1 }} />ENTREGADO
+            </Fab>);
+        } else if (status === 'FINISHED') {
+            return (<Fab variant="extended" size="small" color="warning" aria-label="add">
+                <DoneAllIcon sx={{ mr: 1 }} />FINALIZADO
+            </Fab>);
+        } else if (status === 'CANCELED') {
+            return (<Fab variant="extended" size="small" color="error" aria-label="add">
+                <CancelIcon sx={{ mr: 1 }} />CANCELADO
+            </Fab>);
+        } else {
+            return null;
+        }
+    }
 
     return (
         <React.Fragment>
@@ -139,7 +196,7 @@ export default function Projects({projects, _professors}) {
                                 <Avatar><WorkIcon /></Avatar>
                             }
                         </ListItemAvatar>
-                        <ListItemText primary={project.name} secondary={project.projectStatus} sx={{maxWidth:3/8, minWidth:3/8}}/>
+                        <ListItemText primary={project.name} secondary={handleIcons(project.projectStatus)} sx={{maxWidth:3/8, minWidth:3/8}}/>
                         <ListItemText primary={"Proyecto del tipo " + project.projectType}
                                       secondary={"Descripción: " + project.description} sx={{maxWidth:6/8}}/>
                     </ListItemButton>
