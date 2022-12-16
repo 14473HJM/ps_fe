@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import LoadingButton from '@mui/lab/LoadingButton';
+import { useRouter } from 'next/router'
 import usePost from '../../hooks/usePost';
 
 export default function ProjectPresentation(props) {
@@ -14,10 +15,11 @@ export default function ProjectPresentation(props) {
         presentationVideoLink: '',
         demoVideoLink: '',
         deliveryLink: '',
-        finalDocument: null,
+        finalDocumentLink: null,
     });
     const [body, setBody] = React.useState(null);
-    const { data, error, loading } = usePost('/api/projects', body);
+    const { data, error, loading } = usePost('/api/projects/presentation', body);
+    const router = useRouter()
 
     const handleFormOnChange = e => {
         const { name, value } = e.target;
@@ -27,6 +29,27 @@ export default function ProjectPresentation(props) {
         });
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setBody({
+            ...project,
+            students: project.students.map(student => ({ id: student.id, objectType: student.objectType })),
+            tutor: { id: project.tutor.id, objectType: project.tutor.objectType },
+            conversation: { id: project.conversation.id, objectType: project.conversation.objectType },
+            projectPresentation: form,
+        })
+    }
+
+    React.useEffect(() => {
+        setEnableSaveButton(Object.keys(form).every(key => !!form[key]));
+    }, [form])
+
+    React.useEffect(() => {
+        setBody(null);
+        if (data) router.push('/projects');
+        if (error) alert('Error');
+    }, [data, error])
+
     return(
         <React.Fragment>
             <Box component="form"
@@ -34,7 +57,7 @@ export default function ProjectPresentation(props) {
                 alignItems="center"
                 disabled={isDisabled}
                 onChange={handleFormOnChange}
-                //onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
             >
                 <Grid container spacing={1} >
                     <Grid item xs={12} sm={12}>
@@ -93,11 +116,11 @@ export default function ProjectPresentation(props) {
                             required
                             requiredMessage="This field is required."
                             errorTarget="under"
-                            id="finalDocument"
-                            name="finalDocument"
+                            id="finalDocumentLink"
+                            name="finalDocumentLink"
                             fullWidth
                             disabled={isDisabled}
-                            value={form.finalDocument}
+                            value={form.finalDocumentLink}
                         />
                     </Grid>
                 </Grid>

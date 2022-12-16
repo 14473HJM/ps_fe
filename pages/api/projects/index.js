@@ -37,6 +37,9 @@ const handler = async (req, res) => {
                     res.status(status).json(data);
                 });
             break;
+        default:
+            res.status(404);
+            break;
     }
 };
 

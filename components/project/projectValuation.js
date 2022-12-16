@@ -17,7 +17,7 @@ export default function ProjectValuation(props) {
         finalDocument: null,
     });
     const [body, setBody] = React.useState(null);
-    const { data, error, loading } = usePost('/api/projects', body);
+    const { data, error, loading } = usePost('/api/projects/valuations', body);
 
     const handleFormOnChange = e => {
         const { name, value } = e.target;
