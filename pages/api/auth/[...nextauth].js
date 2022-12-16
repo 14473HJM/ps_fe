@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from "next-auth/providers/credentials"
-
+import axios from 'axios';
 
 const options = {
     providers : [
@@ -11,27 +11,25 @@ const options = {
                 password: {  label: "Password", type: "password" }
             },
             async authorize(credentials, req) {
-                const res = await fetch("http://localhost:8080/oauth/login", {
-                    method: 'POST',
-                    body: JSON.stringify(credentials),
-                    headers: { accept: '*/*',
-                        "Content-Type": "application/json" }
-                })
-                console.log(res)
-                const beUser = await res.json()
-                const user = {
-                    name: beUser.user?.userName,
-                    access_token : beUser.token,
-                    roles: beUser.user?.roles,
-                    id: beUser.user.id,
-                    person: beUser.user.person,
-                };
-                // If no error and we have user data, return it
-                if (user) {
-                    return user
+                try {
+                    const { data: beUser } = await axios.post("http://localhost:8080/oauth/login", credentials, {
+                        headers: {
+                            accept: '*/*',
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    return {
+                        name: beUser.user?.userName,
+                        access_token: beUser.token,
+                        roles: beUser.user?.roles,
+                        id: beUser.user?.id,
+                        person: beUser.user?.person,
+                    };
+                } catch ({ response }) {
+                    const { message } = response.data;
+                    throw new Error(message);
                 }
-                // Return null if user data could not be retrieved
-                return null
             }
         })
     ],
@@ -64,6 +62,7 @@ const options = {
     pages: {
         signIn: '/login',
         signOut: '/login',
+        error: '/login',
     }
 }
 

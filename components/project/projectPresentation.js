@@ -19,14 +19,11 @@ export default function ProjectPresentation(props) {
     const [body, setBody] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects', body);
 
-    console.log(props);
-
     const handleFormOnChange = e => {
-        console.log(e.target.files);
-        const { name, value, files } = e.target;
+        const { name, value } = e.target;
         setForm({
             ...form,
-            [name]: name === 'finalDocument' ? files : value,
+            [name]: value,
         });
     }
 
@@ -54,7 +51,6 @@ export default function ProjectPresentation(props) {
                             autoComplete="presentationVideoLink"
                             disabled={isDisabled}
                             value={form.presentationVideoLink}
-                            //onChange={handleIssueTrackerChanges}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
@@ -71,7 +67,6 @@ export default function ProjectPresentation(props) {
                             autoComplete="demoVideoLink"
                             disabled={isDisabled}
                             value={form.demoVideoLink}
-                            //onChange={handleIssueTrackerChanges}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
@@ -88,7 +83,6 @@ export default function ProjectPresentation(props) {
                             autoComplete="deliveryLink"
                             disabled={isDisabled}
                             value={form.deliveryLink}
-                            //onChange={handleIssueTrackerChanges}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
@@ -102,9 +96,8 @@ export default function ProjectPresentation(props) {
                             id="finalDocument"
                             name="finalDocument"
                             fullWidth
-                            type="file"
-                            inputProps={{ accept: "application/pdf" }}
                             disabled={isDisabled}
+                            value={form.finalDocument}
                         />
                     </Grid>
                 </Grid>
