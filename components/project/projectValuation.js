@@ -5,19 +5,27 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import LoadingButton from '@mui/lab/LoadingButton';
 import usePost from '../../hooks/usePost';
+import { FormatAlignCenterRounded } from '@mui/icons-material';
+
+const valuationTypeMapper = {
+    projectManagementNote: 'MANAGEMENT',
+    productDevelopmentNote: 'PRODUCT',
+    finalNote: 'TOTAL_VALUATION',
+}
 
 export default function ProjectValuation(props) {
     const [project, setProject] = React.useState(props.project);
     const [isDisabled, setIsDisabled] = React.useState(props.isDisabled);
-    const [enableSaveButton, setEnableSaveButton] = React.useState(false);
     const [form, setForm] = React.useState({
         projectManagementNote: '',
         productDevelopmentNote: '',
         finalNote: '',
-        finalDocument: null,
     });
     const [body, setBody] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects/valuations', body);
+
+    const enableSaveButton = ['projectManagementNote', 'productDevelopmentNote', 'finalNote']
+        .every(field => !!form[field] === true);
 
     const handleFormOnChange = e => {
         const { name, value } = e.target;
@@ -27,6 +35,30 @@ export default function ProjectValuation(props) {
         });
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const valuations = Object.keys(form).map(key => ({
+            projectId: project.id,
+            valuationType: valuationTypeMapper[key],
+            value: form[key],
+            evaluator: { id: project.tutor.id, objectType: project.tutor.objectType },
+            resume: '',
+        }))
+        setBody({
+            ...project,
+            students: project.students.map(student => ({ id: student.id, objectType: student.objectType })),
+            tutor: { id: project.tutor.id, objectType: project.tutor.objectType },
+            conversation: { id: project.conversation.id, objectType: project.conversation.objectType },
+            valuations,
+        })
+    }
+
+    React.useEffect(() => {
+        setBody(null);
+        if (data) router.push('/projects');
+        if (error) alert('Error');
+    }, [data, error])
+
     return (
         <React.Fragment>
             <Box component="form"
@@ -34,7 +66,7 @@ export default function ProjectValuation(props) {
                 alignItems="center"
                 disabled={isDisabled}
                 onChange={handleFormOnChange}
-            //onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
             >
                 <Grid container spacing={4} direction="column" sm={4}>
                     <Grid item xs={12} sm={12}>
