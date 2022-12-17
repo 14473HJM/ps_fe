@@ -11,10 +11,28 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { getCsrfToken, signIn } from "next-auth/react"
 import { Copyright, LogoCard } from "../../components/brand/copyright";
 import Soon from '../../components/common/soon';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const theme = createTheme();
 
-export default function Login({ csrfToken }) {
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+export default function Login({ csrfToken, _error}) {
+
+    const [openSnackbarError, setOpenSnackbarError] = React.useState(_error? true : false);
+
+    const handleCloseSnackbar = (event, reason, t) => {
+        if(t === "E") {
+            if (reason === 'clickaway') {
+                return;
+            }
+            setOpenSnackbarError(false);
+        }
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const credentials = {
@@ -94,15 +112,27 @@ export default function Login({ csrfToken }) {
                 </Box>
                 <Copyright simple sx={{ mt: 8, mb: 4 }} color="black" />
             </Container>
+            <Snackbar
+                open={openSnackbarError}
+                autoHideDuration={6000}
+                onClose={(e, r) => handleCloseSnackbar(e, r, 'E')}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'bottom'}}
+            >
+                <Alert onClose={(e, r) => handleCloseSnackbar(e, r, 'E')} severity="error" sx={{ width: '100%' }}>
+                    {_error}
+                </Alert>
+            </Snackbar>
         </ThemeProvider>
     );
 }
 
 // TODO - Agregado
 export async function getServerSideProps(context) {
+    const error = context.query.error ? context.query.error : '';
     return {
         props: {
             csrfToken: await getCsrfToken(context),
+            _error: error,
         },
     }
 }
