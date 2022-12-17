@@ -335,6 +335,36 @@ export default function Config(props) {
         }
     ];
 
+    const handleAddDisabled = () => {
+        return false;
+    }
+
+    const handleEditDisabled = () => {
+        return false;
+    }
+
+    const handleDeleteDisabled = () => {
+        return false;
+    }
+
+    const handleAddDisabledCohorts = (_cohorts) => {
+        if(_cohorts) {
+            return _cohorts.some(c => c.cohortStatus == 'OPEN');
+        }
+    }
+
+    const handleEditDisabledCohort = (cohort) => {
+        if(cohort) {
+            return cohort.cohortStatus != 'OPEN';
+        } else {
+            return false;
+        }
+    }
+
+    const handleDeleteDisabledCohort = (cohort) => {
+        return true;
+    }
+
     if (session && session.user.roles.includes("ADMIN")) {
         return (
             <Box
@@ -368,6 +398,9 @@ export default function Config(props) {
                         deleteApi={deleteCodeFramework}
                         getAll={getCodeFrameworks}
                         getOne={getCodeFramework}
+                        handleEditDisabled={handleEditDisabled}
+                        handleDeleteDisabled={handleDeleteDisabled}
+                        handleAddDisabled={handleAddDisabled}
                     />
                 </TabPanel>
                 <TabPanel value={value} index={1} sx={{width:'100%'}}>
@@ -382,6 +415,9 @@ export default function Config(props) {
                         deleteApi={deleteCodeLanguage}
                         getAll={getCodeLanguages}
                         getOne={getCodeLanguage}
+                        handleEditDisabled={handleEditDisabled}
+                        handleDeleteDisabled={handleDeleteDisabled}
+                        handleAddDisabled={handleAddDisabled}
                     />
                 </TabPanel>
                 <TabPanel value={value} index={2} sx={{width:'100%'}}>
@@ -394,6 +430,9 @@ export default function Config(props) {
                         putApi={putCodeFramework}
                         postApi={postCodeFramework}
                         deleteApi={deleteCodeFramework}
+                        handleEditDisabled={handleEditDisabled}
+                        handleDeleteDisabled={handleDeleteDisabled}
+                        handleAddDisabled={handleAddDisabled}
                     />
                 </TabPanel>
                 <TabPanel value={value} index={3} sx={{width:'100%'}}>
@@ -406,6 +445,9 @@ export default function Config(props) {
                         putApi={putCodeFramework}
                         postApi={postCodeFramework}
                         deleteApi={deleteCodeFramework}
+                        handleEditDisabled={handleEditDisabled}
+                        handleDeleteDisabled={handleDeleteDisabled}
+                        handleAddDisabled={handleAddDisabled}
                     />
                 </TabPanel>
                 <TabPanel value={value} index={4} sx={{width:'100%'}}>
@@ -423,6 +465,9 @@ export default function Config(props) {
                         deleteApi={deleteInternetPlatform}
                         getAll={getInternetPlatforms}
                         getOne={getInternetPlatform}
+                        handleEditDisabled={handleEditDisabled}
+                        handleDeleteDisabled={handleDeleteDisabled}
+                        handleAddDisabled={handleAddDisabled}
                     />
                 </TabPanel>
                 <TabPanel value={value} index={6} sx={{width:'100%'}}>
@@ -437,6 +482,9 @@ export default function Config(props) {
                         deleteApi={deleteCohort}
                         getAll={getCohorts}
                         getOne={getCohort}
+                        handleEditDisabled={handleEditDisabledCohort}
+                        handleDeleteDisabled={handleDeleteDisabledCohort}
+                        handleAddDisabled={handleAddDisabledCohorts}
                     />
                 </TabPanel>
             </Box>

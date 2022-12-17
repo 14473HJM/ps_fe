@@ -35,7 +35,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, postApi, deleteApi, title, description }) {
+export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, postApi, deleteApi, title, description, handleEditDisabled, handleDeleteDisabled, handleAddDisabled }) {
 
     const [rowOnDelete, setRowOnDelete] = React.useState(0);
     const [rowDeleteIndex, setRowDeleteIndex] = React.useState(0);
@@ -237,7 +237,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                     {title}
                 </Typography>
                 <Fab color="success" aria-label="add" size="medium" sx={{mt: -1.5}}
-                     onClick={handleNew}>
+                     onClick={handleNew} disabled={handleAddDisabled(rows)}>
                     <AddIcon />
                 </Fab>
             </Box>
@@ -303,10 +303,10 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                             <TableCell width={150}>
                                 <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }}>
                                     <React.Fragment>
-                                        <Fab color="primary" aria-label="edit" size="small">
+                                        <Fab color="primary" aria-label="edit" size="small" disabled={handleEditDisabled(row)}>
                                             <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, rows[index])}/>
                                         </Fab>
-                                        <Fab color="error" aria-label="edit" size="small">
+                                        <Fab color="error" aria-label="edit" size="small" disabled={handleDeleteDisabled(row)}>
                                             <DeleteIcon fontSize={"small"} onClick={(e) => handleDelete(e, rows[index], index)}/>
                                         </Fab>
                                     </React.Fragment>
@@ -325,12 +325,12 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                                 ))}
                                 {row.recordStatus != 'DELETED' ?
                                 <TableCell width={150}>
-                                    <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }}>
+                                    <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }} >
                                         <React.Fragment>
-                                            <Fab color="primary" aria-label="edit" size="small">
+                                            <Fab color="primary" aria-label="edit" size="small" disabled={handleEditDisabled(row)}>
                                                 <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, rows[index])}/>
                                             </Fab>
-                                            <Fab color="error" aria-label="edit" size="small">
+                                            <Fab color="error" aria-label="edit" size="small" disabled={handleDeleteDisabled(row)}>
                                                 <DeleteIcon fontSize={"small"} onClick={(e) => handleDelete(e, rows[index], index)}/>
                                             </Fab>
                                         </React.Fragment>
@@ -340,7 +340,7 @@ export function ConfigTable({columns, rows, setRows, getOne, getAll, putApi, pos
                                 <TableCell width={150} sx={{ bgcolor: 'pink' }}>
                                     <Box sx={{ '& > :not(style)': { m: 1 }, display: 'inline' }}>
                                         <React.Fragment>
-                                            <Fab color="primary" aria-label="edit" size="small">
+                                            <Fab color="primary" aria-label="edit" size="small" disabled={handleEditDisabled(row)}>
                                                 <EditIcon fontSize={"small"} onClick={(e) => handleEdit(e, rows[index])}/>
                                             </Fab>
                                         </React.Fragment>
