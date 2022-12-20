@@ -11,11 +11,11 @@ export default function ProjectPresentation(props) {
     const [project, setProject]  = React.useState(props.project);
     const [isDisabled, setIsDisabled] = React.useState(props.isDisabled);
     const [enableSaveButton, setEnableSaveButton] = React.useState(false);
-    const [form, setForm] = React.useState({
+    const [form, setForm] = React.useState(project.projectPresentation || {
         presentationVideoLink: '',
         demoVideoLink: '',
         deliveryLink: '',
-        finalDocumentLink: null,
+        finalDocumentLink: '',
     });
     const [body, setBody] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects/presentation', body);
@@ -32,16 +32,18 @@ export default function ProjectPresentation(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
         setBody({
-            ...project,
-            students: project.students.map(student => ({ id: student.id, objectType: student.objectType })),
-            tutor: { id: project.tutor.id, objectType: project.tutor.objectType },
-            conversation: { id: project.conversation.id, objectType: project.conversation.objectType },
-            projectPresentation: form,
+            id: project.id,
+            ...form,
         })
     }
 
     React.useEffect(() => {
-        setEnableSaveButton(Object.keys(form).every(key => !!form[key]));
+        setEnableSaveButton([
+            'presentationVideoLink',
+            'demoVideoLink',
+            'deliveryLink',
+            'finalDocumentLink',
+        ].every(key => !!form[key]));
     }, [form])
 
     React.useEffect(() => {
