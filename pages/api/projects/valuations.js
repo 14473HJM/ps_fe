@@ -15,9 +15,9 @@ const handler = async (req, res) => {
 
   switch (method) {
     case 'POST':
-      const { id } = body;
+      const { id, valuations } = body;
 
-      axios.post(`http://localhost:8080/ps/projects/${id}/valuations`, body, options)
+      axios.post(`http://localhost:8080/ps/projects/${id}/valuations`, valuations, options)
         .then(function (response) {
           res.status(200).json(response.data);
         })

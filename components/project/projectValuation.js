@@ -31,7 +31,7 @@ export default function ProjectValuation(props) {
         const { name, value } = e.target;
         setForm({
             ...form,
-            [name]: value,
+            [name]: parseInt(value),
         });
     }
 
@@ -45,10 +45,7 @@ export default function ProjectValuation(props) {
             resume: '',
         }))
         setBody({
-            ...project,
-            students: project.students.map(student => ({ id: student.id, objectType: student.objectType })),
-            tutor: { id: project.tutor.id, objectType: project.tutor.objectType },
-            conversation: { id: project.conversation.id, objectType: project.conversation.objectType },
+            id: project.id,
             valuations,
         })
     }
