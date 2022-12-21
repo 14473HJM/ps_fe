@@ -19,7 +19,8 @@ const handler = async (req, res) => {
 
       axios.post(`http://localhost:8080/ps/projects/${id}/valuations`, valuations, options)
         .then(function (response) {
-          res.status(200).json(response.data);
+          // Dato temporal hasta tener una respuesta válida.
+          res.status(200).json(true);
         })
         .catch(function (error) {
           console.log(error);
