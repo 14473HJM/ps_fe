@@ -13,13 +13,18 @@ const valuationTypeMapper = {
     finalNote: 'TOTAL_VALUATION',
 }
 
+const getFormInitialValue = (arrayOfValuations, keyword) => {
+    const valuation = arrayOfValuations.find(val => val.valuationType === keyword);
+    return valuation && valuation.value || '';
+}
+
 export default function ProjectValuation(props) {
     const [project, setProject] = React.useState(props.project);
     const [isDisabled, setIsDisabled] = React.useState(props.isDisabled);
     const [form, setForm] = React.useState({
-        projectManagementNote: '',
-        productDevelopmentNote: '',
-        finalNote: '',
+        projectManagementNote: getFormInitialValue(project.valuations, 'MANAGEMENT'),
+        productDevelopmentNote: getFormInitialValue(project.valuations, 'PRODUCT'),
+        finalNote: getFormInitialValue(project.valuations, 'TOTAL_VALUATION'),
     });
     const [body, setBody] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects/valuations', body);
@@ -65,15 +70,15 @@ export default function ProjectValuation(props) {
                 onChange={handleFormOnChange}
                 onSubmit={handleSubmit}
             >
-                <Grid container spacing={4} direction="column" sm={4}>
-                    <Grid item xs={12} sm={12}>
+                <Grid container spacing={4} direction="column">
+                    <Grid item>
                         <Grid container sx={{ alignItems: 'center' }}>
-                            <Grid item xs={8} sm={10}>
+                            <Grid item sx={{ width: 300 }}>
                                 <Typography variant="h6" gutterBottom>
                                     Nota Gestion del proyecto
                                 </Typography>
                             </Grid>
-                            <Grid item xs={8} sm={2}>
+                            <Grid item sx={{ width: 70 }}>
                                 <TextField
                                     required
                                     requiredMessage="This field is required."
@@ -89,16 +94,17 @@ export default function ProjectValuation(props) {
                                     value={form.projectManagementNote}
                                 />
                             </Grid>
+                            <Grid />
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    <Grid item>
                         <Grid container sx={{ alignItems: 'center' }}>
-                            <Grid item xs={8} sm={10}>
+                            <Grid item sx={{ width: 300 }}>
                                 <Typography variant="h6" gutterBottom>
                                     Nota Desarrollo del producto
                                 </Typography>
                             </Grid>
-                            <Grid item xs={8} sm={2}>
+                            <Grid item sx={{ width: 70 }}>
                                 <TextField
                                     required
                                     requiredMessage="This field is required."
@@ -116,14 +122,14 @@ export default function ProjectValuation(props) {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    <Grid item>
                         <Grid container sx={{ alignItems: 'center' }}>
-                            <Grid item xs={8} sm={10}>
+                            <Grid item sx={{ width: 300 }}>
                                 <Typography variant="h6" gutterBottom>
                                     Nota Final
                                 </Typography>
                             </Grid>
-                            <Grid item xs={8} sm={2}>
+                            <Grid item sx={{ width: 70 }}>
                                 <TextField
                                     required
                                     requiredMessage="This field is required."
