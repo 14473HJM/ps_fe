@@ -1,6 +1,8 @@
 import {getToken} from "next-auth/jwt";
 import Users from "../users";
 import DataGridReport from "../../components/common/tables/dataGridReports";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
 
 const columns = [
     {field: 'userName', headerName: 'Usuario', type:'string', },
@@ -17,7 +19,13 @@ const columns = [
 export default function UsersReport({users}) {
 
     return(
-        <DataGridReport columns={columns} rows={users} />
+        <React.Fragment>
+            <Typography component="h1" variant="h5" color="primary" gutterBottom mr={10}>
+                Reporte de Usuarios
+            </Typography>
+            <br/>
+            <DataGridReport columns={columns} rows={users} />
+        </React.Fragment>
     );
 }
 

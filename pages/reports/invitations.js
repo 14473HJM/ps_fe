@@ -1,38 +1,33 @@
 import {getToken} from "next-auth/jwt";
 import Users from "../users";
 import DataGridReport from "../../components/common/tables/dataGridReports";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
 
-function getCohortName(param) {
-    return `${param.row.cohort.name}`;
-}
-
-function getStudents(param) {
-    return `${param.row.students.map(s => s.name + ' ' + s.lastName)}`;
-}
-
-function getTutor(param) {
-    return `${param.row.tutor.name + ' ' + param.row.tutor.lastName}`;
-}
 
 const columns = [
-    { field: 'name', headerName: 'Nombre', type:'string', },
-    { field: 'projectType', headerName: 'Tipo', type:'string'},
-    { field: 'projectStatus', headerName: 'Estado', type:'string'},
-    { field: 'cohort', headerName: 'Cohorte', type:'string', valueGetter: getCohortName},
-    { field: 'projectTheme', headerName: 'Tema', type:'string', minWidth: 200},
-    { field: 'isRealProject', headerName: 'Real', type:'boolean'},
-    { field: 'students', headerName: 'Estudiantes', type:'string', valueGetter: getStudents, minWidth: 200},
-    { field: 'tutor', headerName: 'Tutor', type:'string', valueGetter: getTutor, minWidth: 150},
+    { field: 'legajo', headerName: 'Legajo', type:'string', },
+    { field: 'email', headerName: 'Email', type:'string', minWidth: 250},
+    { field: 'invitationStatus', headerName: 'Estado', type:'string'},
+    { field: 'usedDate', headerName: 'Fecha de Uso', type:'string', minWidth: 200 },
+    { field: 'dueDateTime', headerName: 'Fecha de Vencimiento', type:'string', minWidth: 200},
+    { field: 'numberOfDeliveries', headerName: 'Cantidad de envios', type:'number',  minWidth: 200}
 ];
 
-export default function ProjectsReport({projects}) {
+export default function InvitationsReport({invitations}) {
 
     return(
-        <DataGridReport columns={columns} rows={projects} />
+        <React.Fragment>
+            <Typography component="h1" variant="h5" color="primary" gutterBottom mr={10}>
+                Reporte de Invitaciones
+            </Typography>
+            <br/>
+            <DataGridReport columns={columns} rows={invitations} />
+        </React.Fragment>
     );
 }
 
-ProjectsReport.auth = true;
+InvitationsReport.auth = true;
 
 export async function getServerSideProps(context) {
 
@@ -51,10 +46,10 @@ export async function getServerSideProps(context) {
         };
 
         // Fetch data from external API
-        const res = await fetch(`http://localhost:8080/ps/projects`, options)
-        const projects = await res.json()
+        const res = await fetch('http://localhost:8080/ps/invitations', options);
+        const invitations = await res.json()
         // Pass data to the page via props
-        return {props: {projects}}
+        return {props: {invitations}}
     } else {
         return {props: {}};
     }

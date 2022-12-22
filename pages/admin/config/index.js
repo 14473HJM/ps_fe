@@ -28,6 +28,8 @@ import {
     putInternetPlatform
 } from "../../api/config/internetPlatformsApi";
 import {deleteCohort, getCohort, getCohorts, postCohort, putCohort} from "../../api/config/cohortesApi";
+import {deletePlatform, postPlatform, putPlatform} from "../../api/config/platformsApi";
+import {deleteTechnology, postTechnology, putTechnology} from "../../api/config/technologiesApi";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -427,9 +429,9 @@ export default function Config(props) {
                         rows={platforms}
                         setRows={setPlatforms}
                         columns={platformsColumns}
-                        putApi={putCodeFramework}
-                        postApi={postCodeFramework}
-                        deleteApi={deleteCodeFramework}
+                        putApi={putPlatform}
+                        postApi={postPlatform}
+                        deleteApi={deletePlatform}
                         handleEditDisabled={handleEditDisabled}
                         handleDeleteDisabled={handleDeleteDisabled}
                         handleAddDisabled={handleAddDisabled}
@@ -442,9 +444,9 @@ export default function Config(props) {
                         rows={technologies}
                         setRows={setTechnologies}
                         columns={technologiesColumns}
-                        putApi={putCodeFramework}
-                        postApi={postCodeFramework}
-                        deleteApi={deleteCodeFramework}
+                        putApi={putTechnology}
+                        postApi={postTechnology}
+                        deleteApi={deleteTechnology}
                         handleEditDisabled={handleEditDisabled}
                         handleDeleteDisabled={handleDeleteDisabled}
                         handleAddDisabled={handleAddDisabled}

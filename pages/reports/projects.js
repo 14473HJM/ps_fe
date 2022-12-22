@@ -1,6 +1,8 @@
 import {getToken} from "next-auth/jwt";
 import Users from "../users";
 import DataGridReport from "../../components/common/tables/dataGridReports";
+import Typography from "@mui/material/Typography";
+import * as React from "react";
 
 function getCohortName(param) {
     return `${param.row.cohort.name}`;
@@ -28,7 +30,13 @@ const columns = [
 export default function ProjectsReport({projects}) {
 
     return(
-        <DataGridReport columns={columns} rows={projects} />
+        <React.Fragment>
+            <Typography component="h1" variant="h5" color="primary" gutterBottom mr={10}>
+                Reporte de Proyectos
+            </Typography>
+            <br/>
+            <DataGridReport columns={columns} rows={projects} />
+        </React.Fragment>
     );
 }
 
