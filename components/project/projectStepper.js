@@ -119,18 +119,32 @@ const currentStep = (projectStatus) => {
     }
 };
 const getBackActionVisible = (session, projectStatus) => {
-    if (session && session.user.roles.includes("ADMIN","PROFESSOR") && !noBackSteps.includes(projectStatus)) {
+    if (session && session.user.roles.includes("ADMIN") && !noBackSteps.includes(projectStatus)) {
         return false;
-    } else {
+    } else if (session && session.user.roles.includes("PROFESSOR") && !noBackSteps.includes(projectStatus)) {
+        return false;
+    }else {
         return true;
     }
+    // if (session && session.user.roles.includes("ADMIN","PROFESSOR") && !noBackSteps.includes(projectStatus)) {
+    //     return false;
+    // } else {
+    //     return true;
+    // }
 }
 const getCancelActionVisible = (session, projectStatus) => {
-    if (session && session.user.roles.includes("ADMIN","PROFESSOR") && !noCancelSteps.includes(projectStatus)) {
+    if (session && session.user.roles.includes("ADMIN") && !noCancelSteps.includes(projectStatus)) {
         return false;
-    } else {
+    } else if (session && session.user.roles.includes("PROFESSOR") && !noCancelSteps.includes(projectStatus)) {
+        return false;
+    }else {
         return true;
     }
+    // if (session && session.user.roles.includes("ADMIN","PROFESSOR") && !noCancelSteps.includes(projectStatus)) {
+    //     return false;
+    // } else {
+    //     return true;
+    // }
 }
 const getNextActionVisible = (session, projectStatus) => {
     if (session && session.user.roles.includes("ADMIN")) {

@@ -65,7 +65,7 @@ export const isValidToNext = (project) => {
                     project.projectLimit && project.scopes.length > 0 && project.projectType
                     && project.projectTheme  && project.tutor&& project.issueTracker &&
                     project.codeRepositories.length > 0 && project.projectPresentation &&
-                    project.valuations.length == 3) {
+                    project.valuations.length === 3) {
                     return true;
                 }
                 break;

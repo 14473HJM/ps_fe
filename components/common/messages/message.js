@@ -75,7 +75,7 @@ export function MessageModalSimple({title, description, modalStatus, setModalSta
             comment: message,
             createdDate: new Date(),
         };
-        const response = await moveProject(session, project, comment, 'MOVE_ON');
+        const response = await moveProject(session, project, comment, action);
         if (response && response.ok) {
             const p = await response.json();
             setProject(p);
