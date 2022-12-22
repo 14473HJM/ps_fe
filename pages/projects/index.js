@@ -171,7 +171,7 @@ export default function Projects({projects, _professors}) {
                 <SendTimeExtensionIcon sx={{ mr: 1 }} />ENTREGADO
             </Fab>);
         } else if (status === 'FINISHED') {
-            return (<Fab variant="extended" size="small" color="warning" aria-label="add">
+            return (<Fab variant="extended" size="small" color="success" aria-label="add">
                 <DoneAllIcon sx={{ mr: 1 }} />FINALIZADO
             </Fab>);
         } else if (status === 'CANCELED') {
