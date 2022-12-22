@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import LoadingButton from '@mui/lab/LoadingButton';
 import usePost from '../../hooks/usePost';
+import { useRouter } from 'next/router'
 import { FormatAlignCenterRounded } from '@mui/icons-material';
 
 const valuationTypeMapper = {
@@ -28,6 +29,7 @@ export default function ProjectValuation(props) {
     });
     const [body, setBody] = React.useState(null);
     const { data, error, loading } = usePost('/api/projects/valuations', body);
+    const router = useRouter();
 
     const enableSaveButton = ['projectManagementNote', 'productDevelopmentNote', 'finalNote']
         .every(field => !!form[field] === true);
