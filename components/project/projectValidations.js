@@ -154,9 +154,6 @@ export const messageValidation = (project) => {
                 if(!project.projectPresentation) {
                     message.fields.push('Archivos finales');
                 }
-                if(!project.valuations.length == 3) {
-                    message.fields.push('Evaluación');
-                }
                 return message;
                 break;
             case "FINISHED":
